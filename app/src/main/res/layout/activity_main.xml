@@ -1,16 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <RelativeLayout
-            android:id="@+id/map_view"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/startLocation"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:hint="출발지를 입력하세요."/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/startSearchBtn"
+            android:text="검색" />
+
+        <EditText
+            android:id="@+id/endLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="도착지를 입력하세요."/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/endSearchBtn"
+            android:text="검색" />
+
+    </LinearLayout>
+
+    <!--<RelativeLayout-->
+            <!--android:id="@+id/map_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+    <!--</RelativeLayout>-->
 
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
