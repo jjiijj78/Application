@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import net.daum.mf.map.api.*;
@@ -28,6 +30,22 @@ public class MainActivity extends AppCompatActivity {
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
         mapViewContainer.addView(mapView);
 
+        try {
+            String result = new GetPointFromAddress().execute("노량진").get();
+
+            Log.d("getPointResult", result);
+            Gson gsonResult = new Gson();
+            PointFromAddressData pointFromAddressData = gsonResult.fromJson(result, PointFromAddressData.class);
+            for (int i=0; i<pointFromAddressData.documents.size(); i++) {
+                String x = pointFromAddressData.documents.get(i).x;
+                String y = pointFromAddressData.documents.get(i).y;
+                Log.d("XY", "x: " + x + "y: "+ y);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /*
