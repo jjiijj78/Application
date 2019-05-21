@@ -3,13 +3,14 @@ package b1g4.com.yourseat;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public final class PointFromAddressData {
+public final class PointFromAddressData implements Serializable {
     @SerializedName("meta") Meta meta;
     @SerializedName("documents") ArrayList<Document> documents;
 
-    public final class Meta {
+    public final class Meta implements Serializable {
         @SerializedName("total_count") int total_count;
         @SerializedName("pageable_count") int pageable_count;
         @SerializedName("is_end") boolean is_end;
@@ -19,7 +20,7 @@ public final class PointFromAddressData {
             this.is_end = is_end;
         }
     }
-    public final class Document {
+    public final class Document implements Serializable {
         @SerializedName("address_name") String address_name;
         @SerializedName("address_type") String address_type;
         @SerializedName("x") String x;
@@ -36,7 +37,7 @@ public final class PointFromAddressData {
         }
     }
 
-    public final class Address {
+    public final class Address implements Serializable {
         @SerializedName("address_name") String address_name;
         @SerializedName("region_1depth_name") String region_1depth_name;
         @SerializedName("region_2depth_name") String region_2depth_name;
@@ -69,7 +70,7 @@ public final class PointFromAddressData {
         }
     }
 
-    public final class RoadAddress {
+    public final class RoadAddress implements Serializable{
         @SerializedName("address_name") String address_name;
         @SerializedName("region_1depth_name") String region_1depth_name;
         @SerializedName("region_2depth_name") String region_2depth_name;

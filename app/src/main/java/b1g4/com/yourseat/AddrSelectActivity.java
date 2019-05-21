@@ -22,12 +22,21 @@ public class AddrSelectActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String input = intent.getExtras().getString("input");
-        ArrayList<String> addressList = (ArrayList<String>) intent.getSerializableExtra("addrList");
+        PointFromAddressData addresses = (PointFromAddressData) intent.getSerializableExtra("addrList");
+
+        ArrayList<String> addressList = new ArrayList<>();
 
         ListView listView = (ListView)findViewById(R.id.addrList);
         selectedTextView = (TextView)findViewById(R.id.selectedAddr);
-        selectedTextView.setText(input);
+        selectedTextView.setText(input); // 검색한 주소명으로 상단 selectedTextView 기본값 설정
 
+        if(addresses.documents.size() == 0) {
+            addressList.add("검색결과가 없습니다.");
+        } else {
+            for(int i = 0; i < addresses.documents.size(); i++) {
+                addressList.add(addresses.documents.get(i).address_name);
+            }
+        }
 
         // 리스트뷰와 addressList를 연결하는 어댑터
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, addressList);

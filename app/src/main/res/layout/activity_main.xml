@@ -32,7 +32,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/endSearchBtn"
-            android:text="검색" />
+            android:text="검색"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchPathBtn"
+            android:text="길찾기"/>
 
     </LinearLayout>
 

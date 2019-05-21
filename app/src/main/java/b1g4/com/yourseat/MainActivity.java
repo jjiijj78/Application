@@ -1,10 +1,21 @@
 package b1g4.com.yourseat;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -37,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
     private EditText startEditText;
     private EditText endEditText;
 
+    private PointFromAddressData startAddresses;
+    private PointFromAddressData endAddresses;
+    private String startAddress = null;
+    private String endAddress = null;
+    private NotificationManager notificationManager;
+    private Notification.Builder builder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,38 +72,96 @@ public class MainActivity extends AppCompatActivity {
         BtnOnClickListener onClickListener = new BtnOnClickListener() ;
         Button startSearchBtn = (Button)findViewById(R.id.startSearchBtn);
         Button endSearchBtn = (Button)findViewById(R.id.endSearchBtn);
+        Button searchPathBtn = (Button)findViewById(R.id.searchPathBtn);
         startSearchBtn.setOnClickListener(onClickListener);
         endSearchBtn.setOnClickListener(onClickListener);
+        searchPathBtn.setOnClickListener(onClickListener);
 
     }
 
+
+    // 주소를 입력하고 검색 버튼을 눌렀을 때 실행되는 파트
+    class BtnOnClickListener implements Button.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            // 길찾기 버튼 클릭 시
+            if(v.getId() == R.id.searchPathBtn) {
+                // 출발지 / 도착지 주소 입력이 미완성일 경우 토스트 출력
+                if(startAddress == null || endAddress == null) {
+                    Toast.makeText(getApplicationContext(), "출발지와 도착지 입력을 완료해주세요.", Toast.LENGTH_SHORT);
+                } else {
+                    // 출발/도착지의 x,y 좌표 받아오기
+                    String startX = null;
+                    String startY = null;
+                    String endX = null;
+                    String endY = null;
+                    for(int i=0; i<startAddresses.documents.size(); i++) {
+                        if(startAddress.equals(startAddresses.documents.get(i).address_name)) {
+                            startX = startAddresses.documents.get(i).x;
+                            startY = startAddresses.documents.get(i).y;
+                        }
+                    }
+                    for(int i=0; i<endAddresses.documents.size(); i++) {
+                        if(endAddress.equals(endAddresses.documents.get(i).address_name)){
+                            endX = endAddresses.documents.get(i).x;
+                            endY = endAddresses.documents.get(i).y;
+                        }
+                    }
+                    // 경로 탐색 파트로 출발/도착지 x,y 좌표 넘겨주기
+                    Log.d("XYdata", "startX: " + startX + "startY: " + startY + "endX" + endX + "endY" + endY);
+                }
+            }
+            // 출발/도착지 주소명 검색 버튼 클릭 시
+            else {
+               String location = null;
+                PointFromAddressData addrData = null;
+                switch(v.getId()) {
+                    case R.id.startSearchBtn:
+                        location = startEditText.getText().toString();
+                        startAddresses = getAddrData(location);
+                        Intent intentS = new Intent(getApplicationContext(), AddrSelectActivity.class);
+                        intentS.putExtra("addrList", startAddresses);
+                        intentS.putExtra("input", location);
+                        startActivityForResult(intentS, Code.requestCodeStart);//액티비티 띄우기
+                        break;
+                    case R.id.endSearchBtn:
+                        location = endEditText.getText().toString();
+                        endAddresses = getAddrData(location);
+                        Intent intentE = new Intent(getApplicationContext(), AddrSelectActivity.class);
+                        intentE.putExtra("addrList", endAddresses);
+                        intentE.putExtra("input", location);
+                        startActivityForResult(intentE, Code.requestCodeEnd);//액티비티 띄우기
+                        break;
+                }
+
+            }
+        }
+    }
+
+    /*
+    * 다음 액티비티가 종료되었을 때 실행됨.
+    */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
         if(resultCode == Code.resultCode) {
             String selectedResult = resultIntent.getStringExtra("selectedAddr");
-            if(requestCode == Code.requestCodeStart) {
+            if(requestCode == Code.requestCodeStart) { // 출발지 주소명 검색으로부터 넘어간 액티비티였을 경우 반환값으로 출발지 EditText 값 설정
+                startAddress = selectedResult;
                 startEditText.setText(selectedResult);
-            } else if(requestCode == Code.requestCodeEnd) {
+            } else if(requestCode == Code.requestCodeEnd) { // 도착지 주소명 검색으로부터 넘어간 액티비티였을 경우 반환값으로 도착지 EditText 값 설정
+                endAddress = selectedResult;
                 endEditText.setText(selectedResult);
             }
-
         }
     }
 
-    // 인풋으로 주소 키워드를 받아와서 REST API를 호출한 후 결과 Address 데이터를 반환해준다.
+    // 인풋으로 받은 주소명으로 GetPointFromAddress AsyncTask를 실행해서 REST API를 호출한 후 결과 Address 데이터를 반환해준다.
     public PointFromAddressData getAddrData(String input) {
         try {
             String result = new GetPointFromAddress().execute(input).get();
-
             Log.d("getPointResult", result);
             Gson gsonResult = new Gson();
             PointFromAddressData pointFromAddressData = gsonResult.fromJson(result, PointFromAddressData.class);
-//            for (int i=0; i<pointFromAddressData.documents.size(); i++) {
-//                list.add(pointFromAddressData.documents.get(i).address_name);
-//                String x = pointFromAddressData.documents.get(i).x;
-//                String y = pointFromAddressData.documents.get(i).y;
-//                Log.d("XY", "x: " + x + "y: "+ y);
-//            }
             return pointFromAddressData;
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,40 +211,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-    }
-
-    class BtnOnClickListener implements Button.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            String location = null;
-            PointFromAddressData addrData = null;
-            ArrayList<String> addressList = new ArrayList<>();
-            switch(v.getId()) {
-                case R.id.startSearchBtn:
-                    location = startEditText.getText().toString();
-                    addrData = getAddrData(location);
-                    break;
-                case R.id.endSearchBtn:
-                    location = endEditText.getText().toString();
-                    addrData = getAddrData(location);
-                    break;
-            }
-            Log.d("ResultCheck", addrData.documents.get(0).x);
-            for(int i=0; i<addrData.documents.size(); i++) {
-                addressList.add(addrData.documents.get(i).address_name);
-            }
-            Intent intent = new Intent(getApplicationContext(), AddrSelectActivity.class);
-            intent.putExtra("addrList", addressList);
-            intent.putExtra("input", location);
-            switch(v.getId()) {
-                case R.id.startSearchBtn:
-                    startActivityForResult(intent, Code.requestCodeStart);//액티비티 띄우기
-                    break;
-                case R.id.endSearchBtn:
-                    startActivityForResult(intent, Code.requestCodeEnd);//액티비티 띄우기
-                    break;
-            }
-        }
     }
 
 }

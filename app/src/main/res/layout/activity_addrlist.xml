@@ -9,7 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/selectedAddr"
-        android:background="@android:color/holo_blue_light"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="5dp"
+        android:textColor="#000000"
+        android:textSize="20dp"
         android:text="검색한 값 여기로 넘겨주게"/>
 
     <ListView
