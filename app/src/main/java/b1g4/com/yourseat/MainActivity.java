@@ -1,41 +1,25 @@
 package b1g4.com.yourseat;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.PointF;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-
 import net.daum.mf.map.api.*;
 
 public class MainActivity extends AppCompatActivity {
@@ -55,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private NotificationManager notificationManager;
     private Notification.Builder builder;
 
+    private ArrayList<ArrayList<String>> searchedRouteArrayList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +55,30 @@ public class MainActivity extends AppCompatActivity {
         startEditText = findViewById(R.id.startLocation);
         endEditText = findViewById(R.id.endLocation);
 
+        searchedRouteArrayList = new ArrayList<ArrayList<String>>();
+
+        /*ArrayList<ArrayList<String>> apiRouteLists = null;
+        for(int i=0; i< apiRouteLists.size(); i++) {
+            ArrayList<String> tmp = new ArrayList<String>(apiRouteLists.get(i));
+            searchedRouteArrayList.add(tmp);
+        }*/
+
+        //테스트용 인풋 생성
+        final ArrayList<String> sample = new ArrayList<>();
+        sample.add("100000384");
+        sample.add("중앙대정문");
+        sample.add("동작01");
+        sample.add("100000165");
+        sample.add("달마사");
+        sample.add("111111111");
+        sample.add("달마사");
+        sample.add("동작21");
+        sample.add("100000165");
+        sample.add("중앙대중문");
+        sample.add("23");
+        searchedRouteArrayList.add(sample);
+
+        // 버튼 설정
         BtnOnClickListener onClickListener = new BtnOnClickListener() ;
         Button startSearchBtn = (Button)findViewById(R.id.startSearchBtn);
         Button endSearchBtn = (Button)findViewById(R.id.endSearchBtn);
@@ -109,6 +119,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                     // 경로 탐색 파트로 출발/도착지 x,y 좌표 넘겨주기
                     Log.d("XYdata", "startX: " + startX + "startY: " + startY + "endX" + endX + "endY" + endY);
+
+                    Intent intent;
+                    intent = new Intent(getApplicationContext(), GetSearchedRouteActivity.class);
+                    //GetSearchedRoute로 intent로 ArrayList<String>형태의 한 경로를 GetSearchedRoute로 putExtra
+                    intent.putExtra("startAddress", startAddress);
+                    intent.putExtra("endAddress", endAddress);
+                    intent.putExtra("sRouteList", searchedRouteArrayList);
+                    startActivity(intent);
+
                 }
             }
             // 출발/도착지 주소명 검색 버튼 클릭 시
@@ -173,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
     HashKey을 가져와서 Log로 띄운다.
     다음 지도 API에 HashKey값을 저장해야 연동가능
     */
+    //또 잠시 주석처리
     public void printHashKey() {
         try {
             PackageInfo info = getPackageManager().getPackageInfo("b1g4.com.yourseat", PackageManager.GET_SIGNATURES);

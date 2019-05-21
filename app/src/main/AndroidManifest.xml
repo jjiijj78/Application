@@ -14,6 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".AddrSelectActivity"></activity>
+        <activity android:name=".UserSelectedRoute"></activity>
+        <activity android:name=".GetSearchedRouteActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
