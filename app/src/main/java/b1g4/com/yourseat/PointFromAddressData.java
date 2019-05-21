@@ -26,6 +26,7 @@ public final class PointFromAddressData {
         @SerializedName("y") String y;
         @SerializedName("address") Address address;
         @SerializedName("road_address") RoadAddress road_address;
+
         public Document(String address_name, String address_type, String x, String y, Address address, RoadAddress road_address) {
             this.address_name = address_name;
             this.address_type = address_type;
