@@ -14,6 +14,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
         }
     }
 
@@ -39,3 +40,7 @@ dependencies {
     implementation files('libs/poi-bin-3.10-FINAL-20140208/poi-3.10-FINAL/poi-3.10-FINAL-20140208.jar')
 }
 
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

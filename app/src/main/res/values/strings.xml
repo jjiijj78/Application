@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">YourSeat</string>
+    <string name="pushTitle">앉으셨나요?</string>
+    <string name="pushDescription">실시간 경로 추천을 위해 착석 여부를 체크해주세요.</string>
 </resources>
