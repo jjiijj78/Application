@@ -97,17 +97,20 @@ public class CongestionClass {
      * @param minute : 0~59분
      * @return hh시 mm분일 때 버스의 혼잡도
      */
-    public int getCongestion(int day, int hour, int minute, String stationId) {
-        return (this.congestion.get(stationId).get(day)[hour+1] - this.congestion.get(stationId).get(day)[hour] * (minute / 60)
+    public double getCongestion(int day, int hour, int minute, String stationId) {
+        return ((this.congestion.get(stationId).get(day)[hour+1] - this.congestion.get(stationId).get(day)[hour]) * (minute / 60)
                 + this.congestion.get(stationId).get(day)[hour]);
     }
 
     /**
      * 재차인원 계산 승차-하차, 시간대별로 나와야함.
      */
-    public void calcPassengerNum() {
+    public Double calcPassengerNum(int day, int hour, int minute, String stationId) {
 
+        return ((this.passengerNum.get(stationId).get(day)[(hour+1)%24]-this.passengerNum.get(stationId).get(day)[(hour)%24])* (minute / 60)
+                +this.passengerNum.get(stationId).get(day)[hour]);
     }
+
 
     /**
      *

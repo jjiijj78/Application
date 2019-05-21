@@ -118,7 +118,7 @@ public class CalcCongestionClass {
      * 노선에서 이전 정류장의 stationID를 반환
      * 시점의 이전 정류장은 종점을 말한다 ==> % 사용
      * @param routeName
-     * @param stationID
+     * @param "stationID"
      */
     private String getBeforeStation(String routeName, String stationId){
         String result="";
@@ -140,12 +140,44 @@ public class CalcCongestionClass {
      * @return
      */
     private int getTimeInterval(String routeName, String stationID,String before_stationID){
-        int result=10;//여기도 임의로 테스트용으로 5분간격이라고 한거임!
+        Pattern pD4_9=Pattern.compile("^9[0-9]{3}");
+        Pattern pD4=Pattern.compile("^[0-9]{4}");
+        Pattern pD3=Pattern.compile("^[0-9]{3}");
+        Pattern pD2=Pattern.compile("^[0-9]{2}");
+        Pattern pHD=Pattern.compile("^[가-힣]*[0-9]{2}");
+        Pattern pN=Pattern.compile("^N");
 
-        //희수 코드와 합쳐야 함
+        ArrayList<Integer> result=new ArrayList<>();
+        if(pD4_9.matcher(routeName).find()){
+            System.out.println("test== "+routeName+" 광역");
+            return 15;
 
-        return result;
-    }
+        }else if(pD4.matcher(routeName).find()){
+            System.out.println("test== "+routeName+" 지선");
+            return 4;
+
+        }else if(pD3.matcher(routeName).find()){
+            System.out.println("test== "+routeName+" 간선");
+            return 5;
+
+        }else if(pD2.matcher(routeName).find()){
+            System.out.println("test== "+routeName+" 순환");
+            return 5;
+
+        }else if(pHD.matcher(routeName).find()){
+            System.out.println("test== "+routeName+" 마을");
+            return 3;
+
+        }else if(pN.matcher(routeName).find()){
+            System.out.println("test== "+routeName+" N심야");
+            return 15;
+
+        }else{
+            System.out.println("test== "+routeName+" 알수없는 형식의 버스번호입니다.");
+            return 10;
+        }
+
+        }
 
 
     /**

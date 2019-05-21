@@ -20,20 +20,20 @@ public class SearchRoute {
     private ArrayList<ArrayList<String>> apiRouteLists = new ArrayList<ArrayList<String>>();
 
     // 원래 코드
-    // public void searchRouteByAPI( String startXPos, String startYPos, String endXPos, String endYPos  ){
+     public void searchRouteByAPI( String startXPos, String startYPos, String endXPos, String endYPos  ){
 
-    public void searchRouteByAPI(){
+    //public void searchRouteByAPI(){
 
         try {
 
             //원래 코드, 밑에는 테스트용 코드로 임의의 x와 y 넣어둠
-            //String urlStr =  "http://ws.bus.go.kr/api/rest/pathinfo/getPathInfoByBus" + "?ServiceKey=hRcdNI0WTwvb4waUa3XtdJdOYRyeZzqFg4m7aYwpkjvp13%2BMaSjxMizRLWp0uJrrAX6BN9BWarqYoGR0Bu8l2A%3D%3D"
-            //+ "&startX=" + startXPos + "&startY=" + startYPos + "&endX=" + endXPos + "&endY=" + endYPos;
+            String urlStr =  "http://ws.bus.go.kr/api/rest/pathinfo/getPathInfoByBus" + "?ServiceKey=hRcdNI0WTwvb4waUa3XtdJdOYRyeZzqFg4m7aYwpkjvp13%2BMaSjxMizRLWp0uJrrAX6BN9BWarqYoGR0Bu8l2A%3D%3D"
+            + "&startX=" + startXPos + "&startY=" + startYPos + "&endX=" + endXPos + "&endY=" + endYPos;
 
 
-            String urlStr =  "http://ws.bus.go.kr/api/rest/pathinfo/getPathInfoByBus"
-                    + "?ServiceKey=hRcdNI0WTwvb4waUa3XtdJdOYRyeZzqFg4m7aYwpkjvp13%2BMaSjxMizRLWp0uJrrAX6BN9BWarqYoGR0Bu8l2A%3D%3D"
-                    + "&startX=" + "127.01966520359342" + "&startY=" + "37.574197493878486" + "&endX=" + "126.9675787181807" + "&endY=" + "37.567058032371364";
+//            String urlStr =  "http://ws.bus.go.kr/api/rest/pathinfo/getPathInfoByBus"
+//                    + "?ServiceKey=hRcdNI0WTwvb4waUa3XtdJdOYRyeZzqFg4m7aYwpkjvp13%2BMaSjxMizRLWp0uJrrAX6BN9BWarqYoGR0Bu8l2A%3D%3D"
+//                    + "&startX=" + "127.01966520359342" + "&startY=" + "37.574197493878486" + "&endX=" + "126.9675787181807" + "&endY=" + "37.567058032371364";
 
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dbuilder = dbFactory.newDocumentBuilder();

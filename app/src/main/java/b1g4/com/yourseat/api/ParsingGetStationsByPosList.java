@@ -1,5 +1,6 @@
 package b1g4.com.yourseat.api;
 
+
 import java.util.ArrayList;
 
 import org.w3c.dom.NodeList;
@@ -17,7 +18,7 @@ import org.w3c.dom.NodeList;
  double radius=100;
  ArrayList<getStationByPosListClass> result=tmp.sendUrltoAPI(servicekey, tmX, tmY, radius);
  */
-public class ParsingGetStationsByPostList {
+public class ParsingGetStationsByPosList {
 
     /**
      * 정류소정보조회 서비스 중 getStaionsByPosList(좌표기반근접 정류소 조회)기능을 이용하기 위한 URL 예시 (https://www.data.go.kr/dataset/15000303/openapi.do)
