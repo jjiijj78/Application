@@ -117,15 +117,21 @@ public class MainActivity extends AppCompatActivity {
                             endY = endAddresses.documents.get(i).y;
                         }
                     }
-                    // 경로 탐색 파트로 출발/도착지 x,y 좌표 넘겨주기
-                    Log.d("XYdata", "startX: " + startX + "startY: " + startY + "endX" + endX + "endY" + endY);
 
                     Intent intent;
                     intent = new Intent(getApplicationContext(), GetSearchedRouteActivity.class);
-                    //GetSearchedRoute로 intent로 ArrayList<String>형태의 한 경로를 GetSearchedRoute로 putExtra
                     intent.putExtra("startAddress", startAddress);
                     intent.putExtra("endAddress", endAddress);
-                    intent.putExtra("sRouteList", searchedRouteArrayList);
+                    // 출발지 - 도착지간 직선거리가 700m 이하이면 길찾기 수행X
+                    CoordinatesDistance coordinatesDistance = new CoordinatesDistance();
+                    if(coordinatesDistance.isTooShort(startX, startY, endX, endY)) {
+                        intent.putExtra("isSearched", "false");
+                    } else {
+                        // 경로 탐색 파트로 출발/도착지 x,y 좌표 넘겨주기 -> 결과리스트 searchedRouteArrayList에 받도록.
+                        Log.d("XYdata", "startX: " + startX + "startY: " + startY + "endX" + endX + "endY" + endY);
+                        intent.putExtra("isSearched", "true");
+                        intent.putExtra("sRouteList", searchedRouteArrayList);
+                    }
                     startActivity(intent);
 
                 }
@@ -187,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+
+
+
 
     /*
     HashKey을 가져와서 Log로 띄운다.
