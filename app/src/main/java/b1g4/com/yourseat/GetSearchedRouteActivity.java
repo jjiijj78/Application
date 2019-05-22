@@ -13,6 +13,9 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+import b1g4.com.yourseat.findPath.RecommendPath;
+import b1g4.com.yourseat.findPath.SearchPath;
+
 public class GetSearchedRouteActivity extends AppCompatActivity {
 
     private TextView selectedItemView;
@@ -22,6 +25,8 @@ public class GetSearchedRouteActivity extends AppCompatActivity {
     private String endAddress;
     private String isSearched;
     private ArrayList<ArrayList<String>> srouteList;
+    private CurrentLocationXY currentLocationXY = CurrentLocationXY.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +53,7 @@ public class GetSearchedRouteActivity extends AppCompatActivity {
             srouteList = (ArrayList<ArrayList<String>>) intent.getSerializableExtra("sRouteList");
 
             //리스트뷰와 sRouteList를 연결해준다.
-            ArrayList<String> srouteStringList = new ArrayList<String>();
+            final ArrayList<String> srouteStringList = new ArrayList<String>();
             for (int i = 0; i < srouteList.size(); i++) {
                 SearchedRoute searchedRoute = new SearchedRoute(srouteList.get(i));
                 String srouteListString;
@@ -83,14 +88,22 @@ public class GetSearchedRouteActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     String selectedItem = (String)parent.getItemAtPosition(position);
                     selectedItemView.setText((position+1) + "번째 경로를 선택하셨습니다.");
-
+                    RecommendPath recommendpath = new RecommendPath();
+                    recommendpath.getStationListOnPath(srouteStringList);
+                    if(recommendpath.calcTotalCongestionInPath() == true){
+                        if(recommendpath.isNearestStop(Double.parseDouble(currentLocationXY.getX()), Double.parseDouble(currentLocationXY.getY()))){
+                            SearchPath searchPath = new SearchPath();
+                            //searchPath.getTransferPath(recommendpath.getCoordinateOnMidPath().get(0),recommendpath.getCoordinateOnMidPath().get(1),
+                            //        recommendpath.getCoordinateOnMidPath().get(4), recommendpath.getCoordinateOnMidPath().get(3));
+                        }
+                    }
                     Intent resultIntent = new Intent(getApplicationContext(), UserSelectedRoute.class);
                     //selectedItem을 putExtra
                     resultIntent.putExtra("selectedRoute",selectedItem);
                     resultIntent.putExtra("startAddress", startAddress);
                     resultIntent.putExtra("endAddress", endAddress);
                     startActivity(resultIntent);
-                    ;
+
                 }
             });
         }

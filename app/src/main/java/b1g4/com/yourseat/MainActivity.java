@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import net.daum.mf.map.api.*;
 
+import b1g4.com.yourseat.findPath.SearchPath;
+
 public class MainActivity extends AppCompatActivity implements MapView.CurrentLocationEventListener {
 
     private List<String> list;          // 데이터를 넣은 리스트변수
@@ -144,6 +146,8 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                         intent.putExtra("isSearched", "false");
                     } else {
                         // 경로 탐색 파트로 출발/도착지 x,y 좌표 넘겨주기 -> 결과리스트 searchedRouteArrayList에 받도록.
+                        SearchPath searchpath = new SearchPath();
+                        searchedRouteArrayList = searchpath.getPathsFromStations(Double.parseDouble(startX), Double.parseDouble(startY), Double.parseDouble(endX), Double.parseDouble(endY));
                         Log.d("XYdata", "startX: " + startX + "startY: " + startY + "endX" + endX + "endY" + endY);
                         intent.putExtra("isSearched", "true");
                         intent.putExtra("sRouteList", searchedRouteArrayList);

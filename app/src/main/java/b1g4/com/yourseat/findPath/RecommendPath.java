@@ -86,7 +86,7 @@ public class RecommendPath {
         return false;
     }
 
-    public boolean isNearestStop( int startXPos, int startYPos ){
+    public boolean isNearestStop( double startXPos, double startYPos ){
 
         ArrayList<String> stationListBeforeStop = new ArrayList<String>();
         ArrayList<Double> distanceByDistance = new ArrayList<Double>();
