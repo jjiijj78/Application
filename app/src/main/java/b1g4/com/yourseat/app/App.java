@@ -8,6 +8,24 @@ import b1g4.com.yourseat.bus.BusInfoClass;
 
 public class App {
 
+    //routecsv.csv, stationcsv.csv, congestioncsv.csv 를 읽는 코드 ==> 안드로이드 앱에선 이 함수를 사용
+    public boolean saveBusInfo_for_android(String routecsvDir, String stationcsvDir, String congestioncsvDir){
+        boolean status=true;
+        Runtime runtime = Runtime.getRuntime();
+        int mb = 1024*1024;
+
+        BusInfoClass busInfo = BusInfoClass.getInstance();
+        String currentPath = System.getProperty("user.dir");
+
+        ParseFileClass parse_route= new ParseFileClass(routecsvDir,"route", true);
+
+        ParseFileClass parse_station= new ParseFileClass(stationcsvDir,"station", true);
+
+        ParseFileClass parse_congestion= new ParseFileClass(congestioncsvDir,"congestion", true);
+
+        System.out.println("Used Memory : " + (runtime.totalMemory() - runtime.freeMemory())/mb + "MB");
+        return status;
+    }
 
     //routecsv.csv, stationcsv.csv, congestioncsv.csv 를 읽는 코드 ==> 안드로이드 앱에선 이 함수를 사용
     public boolean saveBusInfo(){
