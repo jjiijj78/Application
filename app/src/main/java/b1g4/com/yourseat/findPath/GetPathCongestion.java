@@ -1,11 +1,11 @@
-package findPath;
+package b1g4.com.yourseat.findPath;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.regex.Pattern;
 
-import api.ApigetArrInfoByRouteList;
-import bus.BusInfoClass;
+import b1g4.com.yourseat.api.ApigetArrInfoByRouteList;
+import b1g4.com.yourseat.bus.BusInfoClass;
 
 /**
  * GetPathCongestion
@@ -162,9 +162,9 @@ public class GetPathCongestion {
     /**
      * stationID정류장과 before_stationID정류장 사이의 시간간격을 반환
      * 동일버스에서 정류장 사이 시간간격은 모두 동일하다고 가정
-     * @param routeName
-     * @param stationID
-     * @param before_stationID
+     * @param "routeName
+     * @param "stationID
+     * @param "before_stationID
      * @return
      */
     private int getTimeInterval(String routeName){

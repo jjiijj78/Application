@@ -1,4 +1,4 @@
-package bus;
+package b1g4.com.yourseat.bus;
 
 import java.util.ArrayList;
 import java.util.Collection;

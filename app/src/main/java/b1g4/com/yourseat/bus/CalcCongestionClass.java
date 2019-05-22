@@ -1,4 +1,4 @@
-package bus;
+package b1g4.com.yourseat.bus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,7 +120,7 @@ public class CalcCongestionClass {
      * 노선에서 이전 정류장의 stationID를 반환
      * 시점의 이전 정류장은 종점을 말한다 ==> % 사용
      * @param routeName 
-     * @param stationID 
+     * @param *stationID
      */
     private String getBeforeStation(String routeName, String stationId){
         String result="";

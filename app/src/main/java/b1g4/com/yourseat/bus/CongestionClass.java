@@ -1,4 +1,4 @@
-package bus;
+package b1g4.com.yourseat.bus;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -192,7 +192,7 @@ public class CongestionClass {
     /**
      * 평,토,일 별 시간당 승차,하차인원수를 구한다.
      * 
-     * @param day 0평일, 1토요일, 2일요일
+     * @param "day 0평일, 1토요일, 2일요일
      */
     public void calcGettingOnAndOff() {
         Double[][] GettingOnAndOff = new Double[2][24];

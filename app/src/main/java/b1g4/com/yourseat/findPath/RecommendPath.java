@@ -1,11 +1,13 @@
-package findPath;
+package b1g4.com.yourseat.findPath;
 
-import bus.BusInfoClass;
-import bus.RouteClass;
+
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
+
+import b1g4.com.yourseat.bus.BusInfoClass;
+import b1g4.com.yourseat.bus.RouteClass;
 
 public class RecommendPath {
 

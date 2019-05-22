@@ -1,11 +1,12 @@
-package findPath;
+package b1g4.com.yourseat.findPath;
 
 import java.util.ArrayList;
 
-import api.SearchRoute;
-import api.getStaionsByPosListClass;
-import api.parsing_getStationByPosList;
-import bus.BusInfoClass;
+import b1g4.com.yourseat.api.SearchRoute;
+import b1g4.com.yourseat.api.getStaionsByPosListClass;
+import b1g4.com.yourseat.api.parsing_getStationByPosList;
+import b1g4.com.yourseat.bus.BusInfoClass;
+
 
 /**
  * SearchPath

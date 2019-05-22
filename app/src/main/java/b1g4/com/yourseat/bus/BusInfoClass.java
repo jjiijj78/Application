@@ -1,7 +1,8 @@
-package bus;
+package b1g4.com.yourseat.bus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 /**
  * 싱글톤 객체 
  * 모든 정보는 프로그램 실행부터 끝까지 한번 읽어들이고 수정이 되면 안되고 

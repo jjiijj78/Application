@@ -12,6 +12,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -30,6 +32,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+
 import net.daum.mf.map.api.*;
 
 public class MainActivity extends AppCompatActivity implements MapView.CurrentLocationEventListener {
@@ -54,8 +59,32 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
     private MapView mapView;
     private CurrentLocationXY currentLocationXY = CurrentLocationXY.getInstance();
 
+    public final int MY_PERMISSIONS=4;
+    Set<String> setPermissions=new ConcurrentSkipListSet<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //버전 확인
+        if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) return;
+
+        //권한 확인 Context.checkSelfPermission
+        if(m_checkSelfPermission(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Log.d("권한","m_checkSelfPermission가 참 permission is granted");
+        }else{
+            Log.d("권한","m_checkSelfPermission가 거짓 permission is not granted");
+            if(m_shouldShowRequestPermissionRationale()){
+                Log.d("권한", "permission is not granted, hence showing rationle");
+                //필요한 이유를 설명하는것
+                //Log.d("권한", "권한" + p + "가 필요함");
+                m_requestPermissions();
+            }else{
+                Log.d("권한","permission being requested for first time");
+                m_requestPermissions();
+            }
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -65,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         //ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
         //mapViewContainer.addView(mapView);
         mapView.setCurrentLocationEventListener(this);
+
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
 
 
@@ -284,5 +314,83 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
     protected void onStart() {
         super.onStart();
     }
+
+
+
+    //==============
+    //
+    //권한관련 함수들
+    //
+    //=============
+    private Boolean m_checkSelfPermission(String...ps){
+        for(String p:ps) setPermissions.add(p);
+
+        for(String p:setPermissions){
+            if(PackageManager.PERMISSION_GRANTED==ContextCompat.checkSelfPermission(this,p)){
+                Log.d("권한","권한="+p+"가 이미 획득된 상태라서 지울거임");
+                setPermissions.remove(p);
+            }
+        }
+        if(setPermissions.size()== 0) return true;
+        else return false;
+    }
+    private Boolean m_shouldShowRequestPermissionRationale(){
+        Log.d("권한", "m_shouldShowRequestPermissionRationale() 여기로 들어옴");
+        Boolean status=true;
+        for(String p:setPermissions){
+            if(!ActivityCompat.shouldShowRequestPermissionRationale(this,p)){
+                status=false;
+            }
+        }
+        return status;
+    }
+    private void m_requestPermissions(){
+        String[] permissionArr;
+        int size=setPermissions.size();
+        permissionArr=new String[size];
+        int i=0;
+        for(String pp:setPermissions){
+            permissionArr[i]=pp;
+            i++;
+        }
+        ActivityCompat.requestPermissions(this,permissionArr,MY_PERMISSIONS);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
+        Log.d("권한","onRequestPermissionResult 실행");
+        switch (requestCode) {
+            case  MY_PERMISSIONS: {
+                // If request is cancelled, the result arrays are empty.
+                Log.d("권한","onRequestPermissionsResult :MY_PERMISSIONS들어옴");
+                Boolean status=true;
+                if(grantResults.length <= 0) status=false;
+                for(int i=0;i<grantResults.length;i++){
+                    if(grantResults[i]!=PackageManager.PERMISSION_GRANTED){
+                        status=false;
+                        break;
+                    }
+                }
+
+                if(status) {
+                    Log.d("권한", "onRequestPermissionsResult : 승인");
+                }else{
+                    Log.d("권한","onRequestPermissionsResult :거부");
+
+                    //앱종료 코드 넣어야 함
+                    finishAffinity();
+                    System.runFinalization();
+                    System.exit(0);
+
+                    //앱 권한 설정 페이지로 연결
+                    //Context context = this;
+                    //Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    //        .setData(Uri.parse("package:"+context.getPackageName()));
+                   // startActivityForResult(intent,0);
+                }
+                return;
+            }
+        }
+    }
+
 
 }

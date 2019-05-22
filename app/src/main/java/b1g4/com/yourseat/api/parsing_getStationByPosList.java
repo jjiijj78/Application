@@ -1,4 +1,5 @@
-package api;
+package b1g4.com.yourseat.api;
+
 
 import java.util.ArrayList;
 
@@ -44,7 +45,7 @@ public class parsing_getStationByPosList {
 
     /**
      * api에서 받은 xml을 원하는 형식으로 바꾸어 반환
-     * @param tmp api에서 받은 xml을 NodeList로 변환한 것을 매개변수로 받음
+     * @param *tmp api에서 받은 xml을 NodeList로 변환한 것을 매개변수로 받음
      * @return xml파일을 파싱한 결과를 arrayList로 반환
      */
     ArrayList<getStaionsByPosListClass> xmlParsing(NodeList nodeList) {

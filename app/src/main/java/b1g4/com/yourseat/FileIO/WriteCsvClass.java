@@ -1,4 +1,4 @@
-package fileIO;
+package b1g4.com.yourseat.FileIO;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -11,10 +11,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import bus.BusInfoClass;
-import bus.CongestionClass;
-import bus.RouteClass;
-import bus.StationClass;
+import b1g4.com.yourseat.bus.BusInfoClass;
+import b1g4.com.yourseat.bus.CongestionClass;
+import b1g4.com.yourseat.bus.RouteClass;
+import b1g4.com.yourseat.bus.StationClass;
+
 
 /**
  * 원본 데이터를 읽은 후 가공된 정보를 CSV형태로 저장하기 위해 만든 클래스
@@ -186,7 +187,7 @@ public class WriteCsvClass {
             BufferedWriter fw;
             fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(csvfilename), Charset.forName("UTF-8")));
 
-            BusInfoClass  busInfoClass=BusInfoClass.getInstance();
+            BusInfoClass  busInfoClass= BusInfoClass.getInstance();
 
             Iterator<String> iter= busInfoClass.getRouteHashMap().keySet().iterator();
             while(iter.hasNext()){

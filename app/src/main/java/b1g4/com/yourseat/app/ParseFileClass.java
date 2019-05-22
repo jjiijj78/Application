@@ -1,9 +1,14 @@
-package app;
+package b1g4.com.yourseat.app;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import bus.*;
-import fileIO.*;
+
+import b1g4.com.yourseat.FileIO.ReadCsvClass;
+import b1g4.com.yourseat.FileIO.ReadXlsClass;
+import b1g4.com.yourseat.FileIO.WriteCsvClass;
+import b1g4.com.yourseat.bus.CalcCongestionClass;
+import b1g4.com.yourseat.bus.ParseBusClass;
+import b1g4.com.yourseat.bus.ParsingCongestionClass;
 
 /**
  * 파싱관련 class관리 및 method호출하는 class
@@ -68,7 +73,7 @@ public class ParseFileClass {
                     // //혼잡도 파일로 저장
                      try {
                          WriteCsvClass tmpc = new WriteCsvClass();
-                         tmpc.writeCongestion();            
+                         tmpc.writeCongestion();
                      } catch (IOException e) {
                          e.printStackTrace();
                      }
@@ -124,7 +129,7 @@ public class ParseFileClass {
             result = parse.ParseRouteCsvFile();
         }
         else if(type.equals("station")){
-            result = parse.ParseStationCsvFile();
+            result =parse.ParseStationCsvFile();
         }
         else if(type.equals("congestion")){
             result = parse.ParseCongestionCsvFile();
@@ -143,7 +148,7 @@ public class ParseFileClass {
         boolean result = true;
         result = readxls.readFile();
         if (result) {
-            this.valuesInFile = readxls.getXlsData();
+            this.valuesInFile =readxls.getXlsData();
             return result;
         } else {
             System.out.println("파일 읽기 실패");
@@ -158,7 +163,7 @@ public class ParseFileClass {
      * @return 파일을 정상적으로 읽어들였을 시 true 반환
      */
     private boolean readCSV(boolean isShow){
-        ReadCSVClass readCSV =new ReadCSVClass(this.fileDir, isShow);
+        ReadCsvClass readCSV=new ReadCsvClass(this.fileDir,isShow);
         boolean result = true;
         result = readCSV.readFile();
         if(result){
