@@ -27,7 +27,6 @@ public class ParseBusClass {
         this.rowNum = this.valuesInFile.size();
         this.columnNum = this.valuesInFile.get(0).size();
     }
-
     /**
      * BusInfoClass의 Route, Station관련 HashMap에 정보를 추가하는 작업
      * 이 작업이 끝나면 배차간격과 첫차막차시간을 읽고 //hdy

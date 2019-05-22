@@ -17,7 +17,6 @@ public class GetPathCongestion {
 
     }
 
-
     //{arrmsg1, nstnId1, reride_Num1} {arrmsg2, nstnId2, reride_Num2}
     //arrmsg : 첫번째 도착예정 버스의 도착정보메시지(2분4초후[0번째 전]) ,
     //nstnId : 첫번째 도착예정 버스의 다음정류소 ID,
@@ -44,7 +43,6 @@ public class GetPathCongestion {
 
             //노선의 정류장리스트
             ArrayList<String> stationList= BusInfoClass.getInstance().getRouteInfo(busRouteId).getStationList();
-
             int nstnId1_Ord_1=stationList.indexOf(ArrbusInfo.get(1));//버스가 도착할 예정인 정류장의 Ord-1
             int nowStationOrd_1=stationList.indexOf(Integer.valueOf(stId));//출발정류장의 Ord-1 =======Ord는 1부터시작, indx는 0부터 시작
 
@@ -62,16 +60,16 @@ public class GetPathCongestion {
         return result;
     }
 
-
     /**
      * 환승이 포함된 경로의 혼잡도를 계산== 통계값만을 사용
      * @param path
      * @return
      */
-    public int getTransferPathCongestion(ArrayList<String> path,ArrayList<Integer> now_day_time){
-        int congestion=0;
+    public double getTransferPathCongestion(ArrayList<String> path,ArrayList<Integer> now_day_time){
 
-        int transfer=(int)path.size()/4;//타는 버스 대수 = 환승횟수+1
+        double congestion=0;
+
+        int transfer=(int)path.size() / 5;//타는 버스 대수 = 환승횟수+1
         for(int i=0;i<transfer;i++){
             //출발 정류소 id, 노선 id, 노선명, 도착정류소 id
             String startStstionId=path.get(i*(transfer)+0);
@@ -92,8 +90,8 @@ public class GetPathCongestion {
      * @param endStationId
      * @return
      */
-    public int getOnePathCongestion(String startStstionId,String routeName,String endStationId,ArrayList<Integer> now_day_time){
-        int result=0;
+    public double getOnePathCongestion(String startStstionId,String routeName,String endStationId,ArrayList<Integer> now_day_time){
+        double result=0;
 
         for(String stationId : BusInfoClass.getInstance().getRouteInfo(routeName).stationList){
             //그다음정류장까지의 걸리는 시간
@@ -108,9 +106,9 @@ public class GetPathCongestion {
     /**
      * stationID정류장과 before_stationID정류장 사이의 시간간격을 반환
      * 동일버스에서 정류장 사이 시간간격은 모두 동일하다고 가정
-     * @param routeName
-     * @param stationID
-     * @param before_stationID
+     * @param "routeName"
+     * @param "stationID"
+     * @param "before_stationID"
      * @return
      */
     private int getTimeInterval(String routeName){

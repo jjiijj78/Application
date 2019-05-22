@@ -14,10 +14,12 @@ public class RecommendPath {
     private ArrayList<String> stationListOnPath = new ArrayList<String>();
     private BusInfoClass businfo = BusInfoClass.getInstance();
     String minCongestionStop = "";
+    String lastStop = "";
 
     public RecommendPath() {
     }
 
+    //경로 사이의 모든 정류장 구하기
     public void getStationListOnPath(ArrayList<String> selectedPath) {
 
         this.transferNum = (selectedPath.size() / 5) - 1;
@@ -43,6 +45,8 @@ public class RecommendPath {
             }
         }
 
+        lastStop = selectedPath.get(5 * transferNum + 3);
+
         stationListOnPath.add(endSta);
 
         // 확인용 코드, 삭제 예정
@@ -51,7 +55,8 @@ public class RecommendPath {
         }
     }
 
-    public void calcTotalCongestionInPath() {
+    //가장 통계치가좋은 정류소를 고름
+    public boolean calcTotalCongestionInPath() {
 
         ArrayList <Integer> nowDayTime = new ArrayList<Integer>();
         GetPathCongestion getpathcongestion = new GetPathCongestion();
@@ -59,7 +64,7 @@ public class RecommendPath {
 
         int totalMinCongestion = 10;
 
-        if(stationListOnPath.size() > 6) {
+        if(stationListOnPath.size() > 6) { //가는 길 속 정류장이 6개 미만이면 혼잡도에 따른 다른 경로를 추천
 
             for (int i = 0; i < stationListOnPath.size() - 3; i++) {
                 Set tempRouteSet = businfo.getStationInfo(stationListOnPath.get(i)).getRouteListHashMap().keySet();
@@ -74,13 +79,14 @@ public class RecommendPath {
                 if (totalMinCongestion > totalCongestionByStop) {
                     minCongestionStop = stationListOnPath.get(i);
                     totalMinCongestion = totalCongestionByStop;
-
                 }
             }
+            return true;
         }
+        return false;
     }
 
-    public boolean isNearestStop( int startXPos, int startYPos, int endXPos, int endYPos ){
+    public boolean isNearestStop( int startXPos, int startYPos ){
 
         ArrayList<String> stationListBeforeStop = new ArrayList<String>();
         ArrayList<Double> distanceByDistance = new ArrayList<Double>();
@@ -109,5 +115,18 @@ public class RecommendPath {
             }
         }
         return false;
+    }
+
+    public ArrayList<Double> getCoordinateOnMidPath(){
+        ArrayList<Double> result = new ArrayList<Double>();
+        result.add(Double.parseDouble(businfo.getStationInfo(minCongestionStop).stationX));
+        result.add(Double.parseDouble(businfo.getStationInfo(minCongestionStop).stationY));
+        result.add(Double.parseDouble(businfo.getStationInfo(lastStop).stationX));
+        result.add(Double.parseDouble(businfo.getStationInfo(lastStop).stationX));
+        return result;
+    }
+
+    public String getMinCongestionStop(){
+        return minCongestionStop;
     }
 }

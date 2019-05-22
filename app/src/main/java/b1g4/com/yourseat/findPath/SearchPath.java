@@ -12,6 +12,7 @@ import b1g4.com.yourseat.bus.BusInfoClass;
  * SearchPath
  */
 public class SearchPath {
+
     BusInfoClass busInfoClass= BusInfoClass.getInstance();
 
     //저장할 공간
@@ -87,7 +88,7 @@ public class SearchPath {
      */
     private void addPaths_to_resultPathList(ArrayList<ArrayList<String>> paths,ArrayList<Integer> nowDayTime){
         GetPathCongestion getPathC=new GetPathCongestion();
-        int mincongestionvalue=99999999;
+        double mincongestionvalue=99999999;
         ArrayList<String> minCongPath=new ArrayList<>();
 
         int i=0;
@@ -105,9 +106,9 @@ public class SearchPath {
             //api를 이용해서
             ArrayList<String> FirstRoute_stationList=busInfoClass.getRouteInfo(onePath.get(1)).getStationList();//첫번째 노선의 정류장리스트-가독성위해 변수 설정
             String nowStationId=onePath.get(1);//출발정류장
-            int nowStationOrd_1=FirstRoute_stationList.indexOf(nowStationId);//출발정류장의 Ord-1 =======Ord는 1부터시작, indx는 0부터 시작
+            int nowStationOrd_1 = FirstRoute_stationList.indexOf(nowStationId);//출발정류장의 Ord-1 =======Ord는 1부터시작, indx는 0부터 시작
             Double testPersonNum=getPathC.getPersonNum_RealTime(onePath.get(0), onePath.get(1), String.valueOf(nowStationOrd_1+1));
-            int testCong=getPathC.getTransferPathCongestion(onePath, nowDayTime);
+            double testCong=getPathC.getTransferPathCongestion(onePath, nowDayTime);
             if(testPersonNum<20.0){
                 //앉을 수 있는 사람수가 나왔으면 바로 그 길로 가도록!
                 minCongPath=onePath;
@@ -171,7 +172,31 @@ public class SearchPath {
      return sendPathList;
      }*/
 
+    public ArrayList<String> getTransferPath( double busStartX, double busStartY, double busEndX, double busEndY ) {
 
+        SearchRoute searchRoute = new SearchRoute();
+        searchRoute.searchRouteByAPI(String.valueOf(busStartX), String.valueOf(busStartY), String.valueOf(busEndX), String.valueOf(busEndY));
 
+        ArrayList<ArrayList<String>> allPaths = searchRoute.getapiRouteLists();
 
+        GetPathCongestion getPathC = new GetPathCongestion();
+        ArrayList<Integer> searchDayTime = getPathC.getNowDayTime();
+
+        ArrayList<ArrayList<String>> selectedPaths = new ArrayList<ArrayList<String>>();
+        selectedPaths.add(allPaths.get(0));
+        selectedPaths.add(allPaths.get(1));
+        selectedPaths.add(allPaths.get(2));
+        selectedPaths.add(allPaths.get(3));
+        selectedPaths.add(allPaths.get(4));
+
+        for (ArrayList<String> eachPath : selectedPaths) {
+            ArrayList<String> currPathInfo = busInfoClass.getRouteInfo(eachPath.get(2)).getStationList();
+            String currStopId = eachPath.get(0);
+            int currPathOrd = currPathInfo.indexOf(currStopId) - 1;
+            if (getPathC.getPersonNum_RealTime(eachPath.get(0), eachPath.get(2), Integer.toString(currPathOrd)) < 20) {
+                return eachPath; //추천 경로 반환
+            }
+        }
+        return null; //앉을 수 있는 노선이 없을 때, null값 반환
+    }
 }

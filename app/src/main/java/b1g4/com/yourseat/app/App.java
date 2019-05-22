@@ -18,6 +18,8 @@ public class App {
         String fileDir1 = currentPath + "\\20190124기준_서울시_버스노선정보_new.xls";
         ParseFileClass parse1 = new ParseFileClass(fileDir1, true, true);
 
+
+
         //배차간격
         //OSSWProj/20190124기준_서울시_노선현황_첫차막차배차.xls
         //String fileDir1_ = currentPath + "\\20190124기준_서울시_노선현황_첫차막차배차_new.xls";
