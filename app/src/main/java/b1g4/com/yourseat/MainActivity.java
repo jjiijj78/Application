@@ -1,11 +1,21 @@
 package b1g4.com.yourseat;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.location.LocationManager;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -22,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.daum.mf.map.api.*;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MapView.CurrentLocationEventListener {
 
     private List<String> list;          // 데이터를 넣은 리스트변수
     private ListView listView;          // 검색을 보여줄 리스트변수
@@ -41,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<ArrayList<String>> searchedRouteArrayList;
 
+    private MapView mapView;
+    private CurrentLocationXY currentLocationXY = CurrentLocationXY.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +61,12 @@ public class MainActivity extends AppCompatActivity {
 
         // printHashKey(); // 해시키 확인
 
-        MapView mapView = new MapView(this);
+        mapView = new MapView(this);
         //ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
         //mapViewContainer.addView(mapView);
+        mapView.setCurrentLocationEventListener(this);
+        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+
 
         startEditText = findViewById(R.id.startLocation);
         endEditText = findViewById(R.id.endLocation);
@@ -217,6 +233,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    // 지도
+    public void onCurrentLocationUpdate(MapView mapView, MapPoint currentLocation, float accuracyInMeters) {
+        MapPoint.GeoCoordinate mapPointGeo = currentLocation.getMapPointGeoCoord();
+        Log.i("CurrentLocationUpdate", String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
+        currentLocationXY.setX(Double.toString(mapPointGeo.longitude));
+        currentLocationXY.setY(Double.toString(mapPointGeo.latitude));
+        Log.i("Check", currentLocationXY.getX());
+    }
+
+    @Override
+    public void onCurrentLocationDeviceHeadingUpdate(MapView mapView, float v) {
+
+    }
+
+    @Override
+    public void onCurrentLocationUpdateFailed(MapView mapView) {
+
+    }
+
+    @Override
+    public void onCurrentLocationUpdateCancelled(MapView mapView) {
+
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -235,6 +276,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+        mapView.setShowCurrentLocationMarker(false);
     }
 
     @Override
