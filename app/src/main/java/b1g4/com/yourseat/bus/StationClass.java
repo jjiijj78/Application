@@ -1,9 +1,9 @@
-package b1g4.com.yourseat.bus;
+package bus;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.HashMap;
 
 /**
  * 정류장에 관한 정보를 저장하는 Class 혼잡도에 대한 정보가 Station에 저장된다.(모든 혼잡도는 각 노선별 정류장에서의 승하차
@@ -36,7 +36,7 @@ public class StationClass {
         HashMap<String, ArrayList<Double>> dump = new HashMap<String, ArrayList<Double>>();
         this.routeList.put(routeId, dump);
     }
-
+    
     /**
      * @param routeId : 현재 정류장을 지나는 노선ID
      */
@@ -46,7 +46,7 @@ public class StationClass {
     }
 
     /**
-     * 정류장과 노선에 대한 정보가 모두 정리된 뒤에 수행되어야 한다.
+     * 정류장과 노선에 대한 정보가 모두 정리된 뒤에 수행되어야 한다. 
      * 특정 노선에 대한 정류장의 혼잡도를 저장
      * @param routeId : 현재 정류장을 지나는 노선ID
      * @param congestion : 현재 정류장을 지나는 노선의 평일, 토요일, 일요일에 관한 모든 혼잡도 정보
@@ -90,7 +90,7 @@ public class StationClass {
 
     /**
      * 현재 정류장의 Y좌표를 반환
-     * 좌표는 WGS84를 따른다.
+     * 좌표는 WGS84를 따른다. 
      * @return stationY
      */
     public String getStationY(){
@@ -98,7 +98,7 @@ public class StationClass {
     }
 
     /**
-     * 현재 정류장을 지나는 노선에 대한 정보를 반환한다.
+     * 현재 정류장을 지나는 노선에 대한 정보를 반환한다. 
      * @return HashMap<String, HashMap<String, ArrayList<Double>>> routeList
      */
     public HashMap<String, HashMap<String, ArrayList<Double>>> getRouteListHashMap(){

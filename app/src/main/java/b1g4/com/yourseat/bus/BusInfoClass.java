@@ -1,10 +1,14 @@
-package b1g4.com.yourseat.bus;
+package bus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
+/**
+ * 싱글톤 객체 
+ * 모든 정보는 프로그램 실행부터 끝까지 한번 읽어들이고 수정이 되면 안되고 
+ * 항상 접근이 가능해야 한다. 
+ */
 public class BusInfoClass{
-
+    
     private static BusInfoClass busInfo = new BusInfoClass();
     // 전체 경로정보 <RouteName, RouteClass Instance> 형식으로 저장
     private HashMap<String, RouteClass> RouteList = new HashMap<String, RouteClass>();
@@ -14,9 +18,9 @@ public class BusInfoClass{
     /**
      * Key : RouteName
      * Value : CongestionClass, 정류장별 혼잡도 정보를 가지고 있음
-     * */
+     * */ 
     private HashMap<String, CongestionClass> CongestionList = new HashMap<String, CongestionClass>();
-
+    
 
     /**
      * 인스턴스를 한개만 생성하기 위함
@@ -42,8 +46,8 @@ public class BusInfoClass{
      * @param instance : RouteClass instance
      */
     public void setRoute(RouteClass instance){
-        // this.RouteList.put(instance.routeId, instance);
-        this.RouteList.put(instance.routeName, instance);
+       // this.RouteList.put(instance.routeId, instance);
+       this.RouteList.put(instance.routeName, instance);
     }
 
     /**
@@ -65,7 +69,7 @@ public class BusInfoClass{
 
     /**
      * 특정 Station정보를 반환
-     * @param stationId : 표준 정류장 ID,
+     * @param stationId : 표준 정류장 ID, 
      * @return StationClass : stationID에 해당하는 StationClass instance를 반환
      */
     public StationClass getStationInfo(String stationId){
@@ -73,7 +77,7 @@ public class BusInfoClass{
     }
 
     /**
-     * StationID를 이용해 특정 정류장에 관한 class instance가 생성되어 있는지 검사한다.
+     * StationID를 이용해 특정 정류장에 관한 class instance가 생성되어 있는지 검사한다. 
      * @param stationId
      * @return boolean
      */
@@ -89,7 +93,7 @@ public class BusInfoClass{
     public boolean isRouteExist(String routeName){
         return this.RouteList.containsKey(routeName);
     }
-
+    
     /**
      * Route에 관해 저장된 모든 정보를 반환
      * 왜 만들었는지 확인하고 필요없으면 삭제
@@ -111,7 +115,7 @@ public class BusInfoClass{
 
     /**
      * Congestion hashmap에 정보를 저장
-     * @param instance : CongestinoClass instance
+     * @param instance : CongestionClass instance
      */
     public void setCongestion(CongestionClass instance){
         this.CongestionList.put(instance.routeName, instance);
@@ -122,10 +126,10 @@ public class BusInfoClass{
      * @param routeName : 노선이름
      * @return CongestionClass : 표준정류장ID_노선이름에 해당하는 CongestionClass instance를 반환
      */
-    public CongestionClass getCongestinoClass(String routeName){
+    public CongestionClass getCongestionClass(String routeName){
         return this.CongestionList.get(routeName);
     }
-
+    
     /**
      * routeName를 이용해 특정 노선 혼잡도에 관한 class instance가 생성되어 있는지 검사한다.
      * @param routeName

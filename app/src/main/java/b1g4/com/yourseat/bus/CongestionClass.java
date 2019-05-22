@@ -1,4 +1,4 @@
-package b1g4.com.yourseat.bus;
+package bus;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,13 +8,15 @@ import java.util.Date;
 import java.util.HashMap;
 
 /**
- * CongestinoClass 혼잡도 정보를 계산하고 해당 정보를 StationClass에 저장한다.
+ * route1개당 congestionclass가 1개씩 생성된다.
+ * 혼잡도 정보를 저장한다.
  */
 public class CongestionClass {
+
     // 정류장을 순번대로 저장.
     public ArrayList<String> stationList = new ArrayList<String>();
 
-    // "중앙대후문___동작01"형식으로 저장, 구분자:"___"
+    // 버스노선명
     public String routeName;
     /**
      * 한달중에 평일이 며칠이 있는지, 토요일이 며칠이 있는지, 일요일이 며칠이 있는지 세어서 저장 0:평일날짜수, 1:토요일날짜수,
@@ -38,7 +40,7 @@ public class CongestionClass {
     /**
      * 평일0-23시, 토요일 0-23시, 일요일 0-23시 순으로 저장 Key : StationID Value : Congestion info,
      */
-    public HashMap<String, HashMap<Integer, int[]>> congestion = new HashMap<String, HashMap<Integer, int[]>>();
+    public HashMap<String, HashMap<Integer, double[]>> congestion = new HashMap<String, HashMap<Integer, double[]>>();
 
 
     /**
@@ -65,7 +67,7 @@ public class CongestionClass {
      * congestion변수 초기화
      */
     private void initCongestion() {
-
+        
     }
 
     public void setStationList(ArrayList<String> list){
@@ -91,29 +93,27 @@ public class CongestionClass {
 
     /**
      * 원하는 시간대를 쪼개 임의로 hh시 mm분에 대한 혼잡도 계산 수식 검사 후 수정 여부 판단.
-     *
+     * 
      * @param day    : 평일, 토요일, 일요일 중 입력
      * @param hour   : 0~23시
      * @param minute : 0~59분
      * @return hh시 mm분일 때 버스의 혼잡도
      */
-    public double getCongestion(int day, int hour, int minute, String stationId) {
-        return ((this.congestion.get(stationId).get(day)[hour+1] - this.congestion.get(stationId).get(day)[hour]) * (minute / 60)
-                + this.congestion.get(stationId).get(day)[hour]);
+    public Double getCongestion(int day, int hour, int minute, String stationId) {
+        return (this.congestion.get(stationId).get(day)[hour+1] - this.congestion.get(stationId).get(day)[hour] )* (minute / 60)
+                + this.congestion.get(stationId).get(day)[hour];
     }
 
     /**
      * 재차인원 계산 승차-하차, 시간대별로 나와야함.
      */
     public Double calcPassengerNum(int day, int hour, int minute, String stationId) {
-
-        return ((this.passengerNum.get(stationId).get(day)[(hour+1)%24]-this.passengerNum.get(stationId).get(day)[(hour)%24])* (minute / 60)
-                +this.passengerNum.get(stationId).get(day)[hour]);
+        return (this.passengerNum.get(stationId).get(day)[(hour+1)%24]-this.passengerNum.get(stationId).get(day)[(hour)%24])* (minute / 60)
+        +this.passengerNum.get(stationId).get(day)[hour];
     }
 
-
     /**
-     *
+     * 
      * @param day
      */
     public void setTotalDaysInfo(String stationId, int day) {
@@ -128,7 +128,7 @@ public class CongestionClass {
     }
 
     /**
-     *
+     * 
      * @param day
      * @param ride
      * @param alight
@@ -164,7 +164,7 @@ public class CongestionClass {
 
     /**
      * 해당날짜의 요일을 판별 (평|토|일)
-     *
+     * 
      * @param date yyyyMMdd형식의 날짜 String
      * @return 0(평일) 1(토요일) 2(일요일)
      * @TODO 공휴일을 판별할수 있는 코드를 여기에 삽입
@@ -191,7 +191,7 @@ public class CongestionClass {
 
     /**
      * 평,토,일 별 시간당 승차,하차인원수를 구한다.
-     *
+     * 
      * @param day 0평일, 1토요일, 2일요일
      */
     public void calcGettingOnAndOff() {

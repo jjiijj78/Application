@@ -1,4 +1,4 @@
-package b1g4.com.yourseat.bus;
+package bus;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ public class ParsingCongestionClass{
     private ArrayList<ArrayList<String>> valuesInFile = new ArrayList<ArrayList<String>>();
     private int rowNum;
     private BusInfoClass busInfo = BusInfoClass.getInstance();
-
+    
     /**
      * constructor
      */
@@ -17,7 +17,7 @@ public class ParsingCongestionClass{
         this.valuesInFile = valuesInFile;
         this.rowNum = this.valuesInFile.size();
     }
-
+    
 
     public boolean parsingCongestionInfo_Month(){
         boolean result = true;
@@ -32,16 +32,16 @@ public class ParsingCongestionClass{
 
             if(busInfo.isCongestionExist(routeName)){
                 // 해당 노선이 있으면 CongestionClass 내부에 Station별 정보를 추가하는것으로 함.
-                int day = busInfo.getCongestinoClass(routeName).WhatDay(date);
-                busInfo.getCongestinoClass(routeName).setTotalDaysInfo(stationId, day);
-                busInfo.getCongestinoClass(routeName).setTotalPeopleInfo(stationId, day, totalRide, totalAlight);
+                int day = busInfo.getCongestionClass(routeName).WhatDay(date);
+                busInfo.getCongestionClass(routeName).setTotalDaysInfo(stationId, day);
+                busInfo.getCongestionClass(routeName).setTotalPeopleInfo(stationId, day, totalRide, totalAlight);
                 //busInfo.setCongestion(temp);
-            }else{
+            }else{ 
                 //없으면 새로 추가하면 됨
                 CongestionClass temp=new CongestionClass(routeName);
                 if(busInfo.isRouteExist(routeName)){
                     temp.setStationList(busInfo.getRouteInfo(routeName).stationList);
-
+                
                     temp.routeName = routeName;
                     int day = temp.WhatDay(date);
                     temp.setTotalDaysInfo(stationId, day);
@@ -73,9 +73,9 @@ public class ParsingCongestionClass{
             if(busInfo.isCongestionExist_station(routeName, stationId)){
 
                 //정보 추가후 congestionList에 다시 삽입
-                //CongestinoClass tmp=busInfo.getCongestinoClass(stationID_routeName);
+                //CongestinoClass tmp=busInfo.getCongestionClass(stationID_routeName);
                 for(int h=0; h<24; h++){
-                    busInfo.getCongestinoClass(routeName).setTotalByTimeInfo(stationId, h, timeRide[h], timeAlight[h]);
+                    busInfo.getCongestionClass(routeName).setTotalByTimeInfo(stationId, h, timeRide[h], timeAlight[h]);
                 }
                 //busInfo.setCongestion(tmp);
             }else{

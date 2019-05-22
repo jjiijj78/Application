@@ -1,4 +1,4 @@
-package b1g4.com.yourseat.api;
+package api;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -54,16 +54,16 @@ public class OpenApi {
             doc=builder.parse(is);
             XPathFactory xPathFactory=XPathFactory.newInstance();
             XPath xPath=xPathFactory.newXPath();
-
+    
             //현재위치와 상관없이 엘리먼트 이름이 <itemList>인 모든 엘리먼트를 읽는다.
             XPathExpression expr= xPath.compile("//itemList");
             NodeList nodeList=(NodeList)expr.evaluate(doc,XPathConstants.NODESET);
-
+            
             return nodeList;
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
         return null;
     }
-
+    
 }

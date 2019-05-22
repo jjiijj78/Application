@@ -1,7 +1,8 @@
-package b1g4.com.yourseat.bus;
+package bus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 /**
@@ -60,6 +61,7 @@ public class CalcCongestionClass {
                 }
                 busInfo.getCongestionHashMap().get(routeName).passengerNum.put(stationId, tmp);
             }
+            System.out.println("test==calc_Passenger()  routeName="+routeName);
         }
         return status;
     }
@@ -91,7 +93,7 @@ public class CalcCongestionClass {
                     else {
                         status = false;
                     }
-                }
+                } 
                 else{
                     status = false;
                 }
@@ -109,7 +111,7 @@ public class CalcCongestionClass {
         //노선별로 첫차시간을 구해야 함!!!
         Integer time = busInfo.getRouteInfo(routeName).getTime().get(0);
         int val = time.intValue();
-
+        
         return val;
 
     }
@@ -117,8 +119,8 @@ public class CalcCongestionClass {
     /**
      * 노선에서 이전 정류장의 stationID를 반환
      * 시점의 이전 정류장은 종점을 말한다 ==> % 사용
-     * @param routeName
-     * @param "stationID"
+     * @param routeName 
+     * @param stationID 
      */
     private String getBeforeStation(String routeName, String stationId){
         String result="";
@@ -129,7 +131,7 @@ public class CalcCongestionClass {
             idx--;
             result=route.stationList.get((idx+route.stationList.size()-1)%route.stationList.size());
         }
-        return result;
+     return result;
     }
 
     /**
@@ -140,7 +142,8 @@ public class CalcCongestionClass {
      * @return
      */
     private int getTimeInterval(String routeName, String stationID,String before_stationID){
-        Pattern pD4_9=Pattern.compile("^9[0-9]{3}");
+        return 10;
+        /*Pattern pD4_9=Pattern.compile("^9[0-9]{3}");
         Pattern pD4=Pattern.compile("^[0-9]{4}");
         Pattern pD3=Pattern.compile("^[0-9]{3}");
         Pattern pD2=Pattern.compile("^[0-9]{2}");
@@ -149,37 +152,37 @@ public class CalcCongestionClass {
 
         ArrayList<Integer> result=new ArrayList<>();
         if(pD4_9.matcher(routeName).find()){
-            System.out.println("test== "+routeName+" 광역");
+           // System.out.println("test== "+routeName+" 광역");
             return 15;
 
         }else if(pD4.matcher(routeName).find()){
-            System.out.println("test== "+routeName+" 지선");
+           // System.out.println("test== "+routeName+" 지선");
             return 4;
 
         }else if(pD3.matcher(routeName).find()){
-            System.out.println("test== "+routeName+" 간선");
+            //System.out.println("test== "+routeName+" 간선");
             return 5;
 
         }else if(pD2.matcher(routeName).find()){
-            System.out.println("test== "+routeName+" 순환");
+           // System.out.println("test== "+routeName+" 순환");
             return 5;
 
         }else if(pHD.matcher(routeName).find()){
-            System.out.println("test== "+routeName+" 마을");
+           // System.out.println("test== "+routeName+" 마을");
             return 3;
 
         }else if(pN.matcher(routeName).find()){
-            System.out.println("test== "+routeName+" N심야");
+            //System.out.println("test== "+routeName+" N심야");
             return 15;
 
         }else{
             System.out.println("test== "+routeName+" 알수없는 형식의 버스번호입니다.");
             return 10;
         }
+        */
+    }
 
-        }
-
-
+    
     /**
      * 원하는 시간대를 쪼개 임의로 hh시 mm분에 대한 승차인원 계산
      * 수식 검사 후 수정 여부 판단.
@@ -192,15 +195,15 @@ public class CalcCongestionClass {
         if(!busInfo.getCongestionHashMap().get(routeName).dayPassengerNum_getOnOff.containsKey(stationId)){
             System.out.println("getOnPassenger : "+stationId +" "+ routeName+" not exist");
             return 0.0;
-        }
+        }        
 
         Double a=busInfo.getCongestionHashMap().get(routeName).dayPassengerNum_getOnOff.get(stationId).get(day)[0][(hour+1)%24];
         Double b=busInfo.getCongestionHashMap().get(routeName).dayPassengerNum_getOnOff.get(stationId).get(day)[0][(hour)%24];
         Double c=(a-b)*minute/60+b;
         return c;
-    }
+     } 
 
-    /**
+     /**
      * 원하는 시간대를 쪼개 임의로 hh시 mm분에 대한 하차인원 계산
      * 수식 검사 후 수정 여부 판단.
      * @param day : 평일, 토요일, 일요일 중 입력
@@ -212,7 +215,7 @@ public class CalcCongestionClass {
         if(!busInfo.getCongestionHashMap().get(routeName).dayPassengerNum_getOnOff.containsKey(stationId)){
             System.out.println("getOnPassenger : "+stationId +" "+ routeName+" not exist");
             return 0.0;
-        }
+        }  
 
         HashMap<Integer,Double[][]> hi=busInfo.getCongestionHashMap().get(routeName).dayPassengerNum_getOnOff.get(stationId);
         Double[][] hello=hi.get(day);
@@ -220,7 +223,7 @@ public class CalcCongestionClass {
         Double b=hello[1][(hour)%24];
         Double c=(a-b)*minute/60+b;
         return c;
-    }
+     } 
 
     private boolean calc_congestion(){
         boolean status=true;
@@ -230,9 +233,9 @@ public class CalcCongestionClass {
             for(String stationId : busInfo.getCongestionHashMap().get(routeName).stationList){
                 if(!busInfo.getCongestionHashMap().get(routeName).passengerNum.containsKey(stationId))
                     continue;
-                HashMap<Integer, int[]> tmpCong = new HashMap<Integer, int[]>();
+                HashMap<Integer, double[]> tmpCong = new HashMap<Integer, double[]>();
                 for(int day = 0; day < 3; day++){
-                    int icong[] = new int[24];
+                    double icong[] = new double[24];
                     for(int i=0; i<24; i++){
                         double num = busInfo.getCongestionHashMap().get(routeName).passengerNum.get(stationId).get(day)[i];
 
@@ -250,7 +253,7 @@ public class CalcCongestionClass {
                         }
                     }
                     tmpCong.put(day, icong);
-                }
+                }   
                 busInfo.getCongestionHashMap().get(routeName).congestion.put(stationId, tmpCong);
             }
         }
@@ -258,9 +261,9 @@ public class CalcCongestionClass {
     }
 
     /**
-     *
+     * 
      * @param routeName
-     * @return 버스 종류
+     * @return 버스 종류 
      * 광역버스(빨강) - 숫자4자리, 9로 시작                  45/0 ex)구글링+뇌피셜
      * 지선버스(초록) - 숫자4자리           좌석20 손잡이17  ex)5511번 버스 조사
      * 간선버스(파랑) - 숫자3자리           좌석24 손잡이24  ex)151번 버스 조사
@@ -269,32 +272,32 @@ public class CalcCongestionClass {
      * N버스            N으로 시작+숫자                     24/24 ex)구글링+뇌피셜
      */
     private ArrayList<Integer> getBusType(String routeName){
-
+       
         Pattern pD4_9=Pattern.compile("^9[0-9]{3}");
         Pattern pD4=Pattern.compile("^[0-9]{4}");
         Pattern pD3=Pattern.compile("^[0-9]{3}");
         Pattern pD2=Pattern.compile("^[0-9]{2}");
         Pattern pHD=Pattern.compile("^[가-힣]*[0-9]{2}");
-        Pattern pN= Pattern.compile("^N");
+        Pattern pN=Pattern.compile("^N");
 
         ArrayList<Integer> result=new ArrayList<>();
         if(pD4_9.matcher(routeName).find()){
-            System.out.println("test== "+routeName+" 광역");
+           // System.out.println("test== "+routeName+" 광역");
             result.add(45);
             result.add(0);
 
         }else if(pD4.matcher(routeName).find()){
-            System.out.println("test== "+routeName+" 지선");
+            //System.out.println("test== "+routeName+" 지선");
             result.add(20);
             result.add(17);
 
         }else if(pD3.matcher(routeName).find()){
-            System.out.println("test== "+routeName+" 간선");
+           // System.out.println("test== "+routeName+" 간선");
             result.add(24);
             result.add(24);
 
         }else if(pD2.matcher(routeName).find()){
-            System.out.println("test== "+routeName+" 순환");
+          //  System.out.println("test== "+routeName+" 순환");
             result.add(20);
             result.add(17);
 
@@ -304,7 +307,7 @@ public class CalcCongestionClass {
             result.add(17);
 
         }else if(pN.matcher(routeName).find()){
-            System.out.println("test== "+routeName+" N심야");
+            //System.out.println("test== "+routeName+" N심야");
             result.add(24);
             result.add(24);
 

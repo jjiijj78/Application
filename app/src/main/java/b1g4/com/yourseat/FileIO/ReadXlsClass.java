@@ -1,8 +1,8 @@
-package b1g4.com.yourseat.FileIO;
-import org.apache.poi.hssf.usermodel.*;
-import java.util.ArrayList;
-import java.io.*;
+package fileIO;
 
+import java.io.*;
+import java.util.ArrayList;
+import org.apache.poi.hssf.usermodel.*;
 
 public class ReadXlsClass{
     private boolean show;
@@ -30,7 +30,7 @@ public class ReadXlsClass{
             System.out.println("파일 입출력 오류 " + e);
             return false;
         }
-
+        
         HSSFSheet sheet = workbook.getSheetAt(0);
         this.rowNum = sheet.getPhysicalNumberOfRows();
         for(int rowIndex = 1; rowIndex < this.rowNum; rowIndex++){
@@ -46,37 +46,35 @@ public class ReadXlsClass{
                     }
                     else {
                         switch(cell.getCellType()){
-                            case HSSFCell.CELL_TYPE_FORMULA:
-                                value=cell.getCellFormula();
-                                break;
-                            case HSSFCell.CELL_TYPE_NUMERIC:
-                                value=cell.getNumericCellValue()+"";
-                                break;
-                            case HSSFCell.CELL_TYPE_STRING:
-                                value=cell.getStringCellValue()+"";
-                                break;
-                            case HSSFCell.CELL_TYPE_BOOLEAN:
-                                value=cell.getBooleanCellValue()+"";
-                                break;
-                            case HSSFCell.CELL_TYPE_ERROR:
-                                value=cell.getErrorCellValue()+"";
-                                break;
-                            case HSSFCell.CELL_TYPE_BLANK:
-                                break;
-                                /*
-                            case _NONE:
-                                break;
-                                */
+                        case FORMULA:
+                            value=cell.getCellFormula();
+                            break;
+                        case NUMERIC:
+                            value=cell.getNumericCellValue()+"";
+                            break;
+                        case STRING:
+                            value=cell.getStringCellValue()+"";
+                            break;
+                        case BOOLEAN:
+                            value=cell.getBooleanCellValue()+"";
+                            break;
+                        case ERROR:
+                            value=cell.getErrorCellValue()+"";
+                            break;
+                        case BLANK:
+                            break;
+                        case _NONE:
+                            break;
                         }
                     }
                     // 파일 정보 저장
                     cellInfo.add(value);
                 }
                 this.xlsFileValues.add(cellInfo);
-            }
+            }   
         }
         try{
-            fis.close();
+            workbook.close();
         }
         catch(IOException e){
             System.out.println("파일 입출력 오류 " + e);
@@ -100,7 +98,7 @@ public class ReadXlsClass{
             System.out.println("");
         }
     }
-
+    
     public ArrayList<ArrayList<String>> getXlsData(){
         return this.xlsFileValues;
     }

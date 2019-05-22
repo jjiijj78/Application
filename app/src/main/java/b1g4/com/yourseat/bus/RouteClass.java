@@ -1,4 +1,4 @@
-package b1g4.com.yourseat.bus;
+package bus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +64,7 @@ public class RouteClass{
         for(int i=0;i<count;i++){
             System.out.print(this.stationList.get(i) + " ");
         }
-
+        
     }
 
 

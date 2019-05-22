@@ -1,21 +1,18 @@
-package b1g4.com.yourseat.app;
+package app;
 
+import java.io.IOException;
 import java.util.ArrayList;
-
-import b1g4.com.yourseat.FileIO.ReadCsvClass;
-import b1g4.com.yourseat.FileIO.ReadXlsClass;
-import b1g4.com.yourseat.bus.CalcCongestionClass;
-import b1g4.com.yourseat.bus.ParseBusClass;
-import b1g4.com.yourseat.bus.ParsingCongestionClass;
+import bus.*;
+import fileIO.*;
 
 /**
  * 파싱관련 class관리 및 method호출하는 class
  * 버스관련 파싱은 Bus package의 ParseBusClass가 담당
  * 지하철관련 파싱은 Subway package의 ParsSubwayClass가 담당
- *
+ * 
  */
 public class ParseFileClass {
-
+    
     // private member variable
     private ArrayList<ArrayList<String>> valuesInFile;
     private String fileDir;
@@ -43,7 +40,7 @@ public class ParseFileClass {
                 }
             } else {
                 //2018년 1월부터 9월까지 perMonth 파일 파싱
-                for(int month=1; month<10; month++){
+                for(int month=1; month<10; month++){ 
                     this.fileDir=fileDir+"\\perMonth\\2018\\BUS_STATION_BOARDING_MONTH_20180"+month+".csv";
                     this.result=this.readCSV(true);
                     if(this.result){
@@ -69,12 +66,12 @@ public class ParseFileClass {
                     //저장한 정보를 바탕으로 혼잡도 계산
                     CalcCongestionClass calcC=new CalcCongestionClass(this.result);
                     // //혼잡도 파일로 저장
-                    // try {
-                    //     WriteCsvClass tmpc = new WriteCsvClass();
-                    //     tmpc.writeCongestion(calcC.getpassengerNum(), calcC.getfinalCongestion());
-                    // } catch (IOException e) {
-                    //     e.printStackTrace();
-                    // }
+                     try {
+                         WriteCsvClass tmpc = new WriteCsvClass();
+                         tmpc.writeCongestion();            
+                     } catch (IOException e) {
+                         e.printStackTrace();
+                     }
                 }
             }
         } else {
@@ -85,8 +82,8 @@ public class ParseFileClass {
 
     //hdy
     /**
-     * 배차간격과 첫차막차 정보가 들어있는 xls파일을 읽어야 하는데
-     * ParseFileClass(String fileDir, boolean isXls, boolean isBus)로는
+     * 배차간격과 첫차막차 정보가 들어있는 xls파일을 읽어야 하는데 
+     * ParseFileClass(String fileDir, boolean isXls, boolean isBus)로는 
      * 코드를 추가할 곳이 없어서 새로 만들었음
      * constructor
      * @param fileDir : 파싱하려는 파일 경로
@@ -104,7 +101,7 @@ public class ParseFileClass {
             }
         }
     }
-
+    
 
     /**
      * 모든 정보를 정리한 후 사용되는 생성자
@@ -112,17 +109,32 @@ public class ParseFileClass {
      * @param fileDir : 정리된 파일의 위치
      * @param isBus : 버스에 관한 파일에 대한 정보면 true
      */
-    public ParseFileClass(String fileDir, boolean isBus) {
+    public ParseFileClass(String fileDir, String type, boolean isBus) {
         // 최종 파일 생성 후 사용되는 생성자
+        boolean result = true;
         this.fileDir = fileDir;
         this.valuesInFile = new ArrayList<ArrayList<String>>();
+        result = this.readCSV(false);
+        if(!result){
+            System.out.println("read file Error");
+            return;
+        }
+        ParseBusClass parse = new ParseBusClass(this.valuesInFile);
+        if(type.equals("route")){
+            result = parse.ParseRouteCsvFile();
+        }
+        else if(type.equals("station")){
+            result = parse.ParseStationCsvFile();
+        }
+        else if(type.equals("congestion")){
+            result = parse.ParseCongestionCsvFile();
+        }
 
-        // 추가 구현 필요
     }
 
     /**
      * isXls가 true일 시 호출되는 함수
-     * xls파일을 읽고 해당 내용을 valuesInFile에 저장한다.
+     * xls파일을 읽고 해당 내용을 valuesInFile에 저장한다. 
      * @param isShow : true면 읽은 내용을 콘솔에 출력
      * @return 파일을 정상적으로 읽어들였을 시 true 반환
      */
@@ -146,7 +158,7 @@ public class ParseFileClass {
      * @return 파일을 정상적으로 읽어들였을 시 true 반환
      */
     private boolean readCSV(boolean isShow){
-        ReadCsvClass readCSV =new ReadCsvClass(this.fileDir, isShow);
+        ReadCSVClass readCSV =new ReadCSVClass(this.fileDir, isShow);
         boolean result = true;
         result = readCSV.readFile();
         if(result){
