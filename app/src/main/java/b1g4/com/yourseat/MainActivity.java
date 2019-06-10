@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import net.daum.mf.map.api.*;
 
-import b1g4.com.yourseat.app.App;
+//import b1g4.com.yourseat.app.App;
 
 public class MainActivity extends AppCompatActivity implements MapView.CurrentLocationEventListener {
 
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // printHashKey(); // 해시키 확인
+        printHashKey(); // 해시키 확인
 
         mapView = new MapView(this);
         //ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
@@ -141,40 +141,40 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
 
 
 
-        //busInfo에 파일들을 읽어서 정보를 저장하는 코드를 실행해야 함
-        String ext= Environment.getExternalStorageState();
-        String sdPath;
-        if(ext.equals(Environment.MEDIA_MOUNTED)){
-            sdPath=Environment.getExternalStorageDirectory().getAbsolutePath();
-        }else{
-            sdPath=Environment.MEDIA_UNMOUNTED;
-        }
-        File myFolder=new File(sdPath.concat("/YourSeat"));
-        Log.d("fileeee",myFolder.getAbsolutePath());
-
-        if(myFolder.exists() && myFolder.isDirectory()){
-
-            String routeDir=myFolder.getAbsolutePath()+"/routecsv.csv";
-            String stationDir=myFolder.getAbsolutePath()+"/stationcsv.csv";
-            String congestionDir=myFolder.getAbsolutePath()+"/congestioncsv.csv";
-            File routeFIle=new File(routeDir);
-            File stationFile=new File(stationDir);
-            File congestionFile=new File(congestionDir);
-            if(routeFIle.exists() && stationFile.exists() && congestionFile.exists()){
-                App app_readFiles=new App();
-                if(app_readFiles.saveBusInfo_for_android(routeDir,stationDir,congestionDir)){
-                    Log.d("read file","success save BusInfo");
-
-                    Toast.makeText(getApplicationContext(), "전처리 완료", Toast.LENGTH_SHORT).show();
-
-                }else{
-                    Log.d("read file","fail save BusInfo");
-                    //여기서 강제 종료를 할것인가?
-                }
-            }else{
-                Log.d("read file","파일이 없습니다");
-            }
-        }
+//        //busInfo에 파일들을 읽어서 정보를 저장하는 코드를 실행해야 함
+//        String ext= Environment.getExternalStorageState();
+//        String sdPath;
+//        if(ext.equals(Environment.MEDIA_MOUNTED)){
+//            sdPath=Environment.getExternalStorageDirectory().getAbsolutePath();
+//        }else{
+//            sdPath=Environment.MEDIA_UNMOUNTED;
+//        }
+//        File myFolder=new File(sdPath.concat("/YourSeat"));
+//        Log.d("fileeee",myFolder.getAbsolutePath());
+//
+//        if(myFolder.exists() && myFolder.isDirectory()){
+//
+//            String routeDir=myFolder.getAbsolutePath()+"/routecsv.csv";
+//            String stationDir=myFolder.getAbsolutePath()+"/stationcsv.csv";
+//            String congestionDir=myFolder.getAbsolutePath()+"/congestioncsv.csv";
+//            File routeFIle=new File(routeDir);
+//            File stationFile=new File(stationDir);
+//            File congestionFile=new File(congestionDir);
+//            if(routeFIle.exists() && stationFile.exists() && congestionFile.exists()){
+//                App app_readFiles=new App();
+//                if(app_readFiles.saveBusInfo_for_android(routeDir,stationDir,congestionDir)){
+//                    Log.d("read file","success save BusInfo");
+//
+//                    Toast.makeText(getApplicationContext(), "전처리 완료", Toast.LENGTH_SHORT).show();
+//
+//                }else{
+//                    Log.d("read file","fail save BusInfo");
+//                    //여기서 강제 종료를 할것인가?
+//                }
+//            }else{
+//                Log.d("read file","파일이 없습니다");
+//            }
+//        }
     }
 
 

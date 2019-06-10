@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class UserSelectedRoute extends AppCompatActivity {
+public class UserSelectedRouteActivity extends AppCompatActivity {
 
     private TextView startPoint;
     private TextView endPoint;
