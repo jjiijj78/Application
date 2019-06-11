@@ -17,7 +17,8 @@ import java.util.ArrayList;
 public class SocketConnect extends AsyncTask<String, String, ArrayList<ArrayList<String>>> {
 
     public boolean status=false;
-    public ArrayList<ArrayList<String>> returnMsg;
+    public ArrayList<ArrayList<String>> returnMsg = new ArrayList<ArrayList<String>>();
+    public ArrayList<ArrayList<String>> returnMsgWithStop = new ArrayList<ArrayList<String>>();
     public String testString="";
     private Socket socket;
     ObjectOutputStream outputStream;
@@ -60,7 +61,8 @@ public class SocketConnect extends AsyncTask<String, String, ArrayList<ArrayList
             BufferedReader reader=new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
             String clientMsg = reader.readLine();
             Log.d("tcp","받은 데이터 !"+clientMsg);
-            translate(clientMsg);
+            convertMsg("1 11 119000097 동작구청.노량진초등학교앞 641 119000067 상도시장 119900108 상도역 동작21 119900255 중앙대중문 19 8 119000097 119000099 119000059 119000061 119900108 119900013 119900105 119900255");
+            //convertMsg(clientMsg);
             status=true;
 
         }catch (Exception e){
@@ -94,8 +96,47 @@ public class SocketConnect extends AsyncTask<String, String, ArrayList<ArrayList
         return  this.returnMsg;
     }
 
-    private void translate(String str){
+    private void convertMsg(String clientMsg){
 
+        String[] arrayOfClientMsg = clientMsg.split("\\s");
+        int routeNum = Integer.parseInt(arrayOfClientMsg[0]);
+
+        if(routeNum != 0) {
+            for (int k = 0; k < routeNum; k++) {
+                for (int i = 1; i < arrayOfClientMsg.length;) {
+
+                    int detailedRouteNum = Integer.parseInt(arrayOfClientMsg[i]);
+                    int stationNum = Integer.parseInt(arrayOfClientMsg[i + detailedRouteNum + 1]);
+
+                    ArrayList<String> tempReturnMsg = new ArrayList<String>();
+
+                    for (int j = i + 1; j <= i + detailedRouteNum; j++) {
+                        tempReturnMsg.add(arrayOfClientMsg[j]);
+                    }
+                    returnMsg.add(tempReturnMsg);
+
+                    ArrayList<String> tempReturnMsgWithStop = new ArrayList<String>();
+
+                    for (int j = i + detailedRouteNum + 2; j <= i + detailedRouteNum + stationNum; j++) {
+                        tempReturnMsgWithStop.add(arrayOfClientMsg[j]);
+                    }
+                    returnMsgWithStop.add(tempReturnMsgWithStop);
+
+                    i = i + detailedRouteNum + stationNum + 2;
+
+                }
+            }
+        }
+        else{
+            Log.d("data","경로가 존재하지 않습니다!");
+        }
+
+        // for test
+        for(int i = 0; i < returnMsg.size(); i++) {
+            for (int j = 0; j < returnMsg.get(i).size(); j++) {
+                Log.d("tcp", returnMsg.get(i).get(j));
+            }
+        }
 
     }
 
