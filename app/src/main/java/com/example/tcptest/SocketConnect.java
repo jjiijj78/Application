@@ -23,7 +23,7 @@ public class SocketConnect extends AsyncTask<String, String, ArrayList<ArrayList
     private Socket socket;
     ObjectOutputStream outputStream;
     ObjectInputStream inputStream;
-    private String host = "111.118.51.9"; // IP
+    private String host = "xxx.xx.x.xxx"; // IP
     private int port = 8000; // PORT번호
     int timeout = 3000;
 
@@ -61,8 +61,8 @@ public class SocketConnect extends AsyncTask<String, String, ArrayList<ArrayList
             BufferedReader reader=new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
             String clientMsg = reader.readLine();
             Log.d("tcp","받은 데이터 !"+clientMsg);
-            convertMsg("1 11 119000097 동작구청.노량진초등학교앞 641 119000067 상도시장 119900108 상도역 동작21 119900255 중앙대중문 19 8 119000097 119000099 119000059 119000061 119900108 119900013 119900105 119900255");
-            //convertMsg(clientMsg);
+            //convertMsg("1 11 119000097 동작구청.노량진초등학교앞 641 119000067 상도시장 119900108 상도역 동작21 119900255 중앙대중문 19 8 119000097 119000099 119000059 119000061 119900108 119900013 119900105 119900255");
+            convertMsg(clientMsg);
             status=true;
 
         }catch (Exception e){
@@ -102,7 +102,6 @@ public class SocketConnect extends AsyncTask<String, String, ArrayList<ArrayList
         int routeNum = Integer.parseInt(arrayOfClientMsg[0]);
 
         if(routeNum != 0) {
-            for (int k = 0; k < routeNum; k++) {
                 for (int i = 1; i < arrayOfClientMsg.length;) {
 
                     int detailedRouteNum = Integer.parseInt(arrayOfClientMsg[i]);
@@ -123,9 +122,7 @@ public class SocketConnect extends AsyncTask<String, String, ArrayList<ArrayList
                     returnMsgWithStop.add(tempReturnMsgWithStop);
 
                     i = i + detailedRouteNum + stationNum + 2;
-
                 }
-            }
         }
         else{
             Log.d("data","경로가 존재하지 않습니다!");
