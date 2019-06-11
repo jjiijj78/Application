@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -96,12 +97,11 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         printHashKey(); // 해시키 확인
 
         mapView = new MapView(this);
-        //ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
-        //mapViewContainer.addView(mapView);
+        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
+        mapViewContainer.addView(mapView);
         mapView.setCurrentLocationEventListener(this);
-
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
-
+        mapView.setShowCurrentLocationMarker(true);
 
         startEditText = findViewById(R.id.startLocation);
         endEditText = findViewById(R.id.endLocation);
@@ -312,6 +312,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         Log.i("CurrentLocationUpdate", String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
         currentLocationXY.setX(Double.toString(mapPointGeo.longitude));
         currentLocationXY.setY(Double.toString(mapPointGeo.latitude));
+        currentLocationXY.setMapPoint(currentLocation);
         Log.i("Check", currentLocationXY.getX());
     }
 
