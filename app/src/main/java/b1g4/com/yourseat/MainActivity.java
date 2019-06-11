@@ -133,10 +133,12 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         BtnOnClickListener onClickListener = new BtnOnClickListener() ;
         Button startSearchBtn = (Button)findViewById(R.id.startSearchBtn);
         Button endSearchBtn = (Button)findViewById(R.id.endSearchBtn);
-        Button searchPathBtn = (Button)findViewById(R.id.searchPathBtn);
+        Button searchPathBusBtn = (Button)findViewById(R.id.searchPathBusBtn);
+        Button searchPathSubwayBtn = (Button)findViewById(R.id.searchPathSubwayBtn);
         startSearchBtn.setOnClickListener(onClickListener);
         endSearchBtn.setOnClickListener(onClickListener);
-        searchPathBtn.setOnClickListener(onClickListener);
+        searchPathBusBtn.setOnClickListener(onClickListener);
+        searchPathSubwayBtn.setOnClickListener(onClickListener);
 
 
 
@@ -182,8 +184,8 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
     class BtnOnClickListener implements Button.OnClickListener {
         @Override
         public void onClick(View v) {
-            // 길찾기 버튼 클릭 시
-            if(v.getId() == R.id.searchPathBtn) {
+            // 버스 길찾기 버튼 클릭 시
+            if(v.getId() == R.id.searchPathBusBtn) {
                 // 출발지 / 도착지 주소 입력이 미완성일 경우 토스트 출력
                 if(startAddress == null || endAddress == null) {
                     Toast.makeText(getApplicationContext(), "출발지와 도착지 입력을 완료해주세요.", Toast.LENGTH_SHORT);
@@ -216,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                         intent.putExtra("isSearched", "false");
                     } else {
                         // 경로 탐색 파트로 출발/도착지 x,y 좌표 넘겨주기 -> 결과리스트 searchedRouteArrayList에 받도록.
+                        // searchedRouteArrayList = ~~~버스 경로 결과 받아오는거
                         Log.d("XYdata", "startX: " + startX + "startY: " + startY + "endX" + endX + "endY" + endY);
                         intent.putExtra("isSearched", "true");
                         intent.putExtra("sRouteList", searchedRouteArrayList);
@@ -223,7 +226,49 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                     startActivity(intent);
 
                 }
-            }
+            } else // 지하철 길찾기 버튼 클릭 시
+                if(v.getId() == R.id.searchPathSubwayBtn) {
+                    // 출발지 / 도착지 주소 입력이 미완성일 경우 토스트 출력
+                    if(startAddress == null || endAddress == null) {
+                        Toast.makeText(getApplicationContext(), "출발지와 도착지 입력을 완료해주세요.", Toast.LENGTH_SHORT);
+                    } else {
+                        // 출발/도착지의 x,y 좌표 받아오기
+                        String startX = null;
+                        String startY = null;
+                        String endX = null;
+                        String endY = null;
+                        for(int i=0; i<startAddresses.documents.size(); i++) {
+                            if(startAddress.equals(startAddresses.documents.get(i).address_name)) {
+                                startX = startAddresses.documents.get(i).x;
+                                startY = startAddresses.documents.get(i).y;
+                            }
+                        }
+                        for(int i=0; i<endAddresses.documents.size(); i++) {
+                            if(endAddress.equals(endAddresses.documents.get(i).address_name)){
+                                endX = endAddresses.documents.get(i).x;
+                                endY = endAddresses.documents.get(i).y;
+                            }
+                        }
+
+                        Intent intent;
+                        intent = new Intent(getApplicationContext(), GetSearchedRouteActivity.class);
+                        intent.putExtra("startAddress", startAddress);
+                        intent.putExtra("endAddress", endAddress);
+                        // 출발지 - 도착지간 직선거리가 700m 이하이면 길찾기 수행X
+                        CoordinatesDistance coordinatesDistance = new CoordinatesDistance();
+                        if(coordinatesDistance.isTooShort(startX, startY, endX, endY)) {
+                            intent.putExtra("isSearched", "false");
+                        } else {
+                            // 경로 탐색 파트로 출발/도착지 x,y 좌표 넘겨주기 -> 결과리스트 searchedRouteArrayList에 받도록.
+                            // searchedRouteArrayList = ~~~지하철 경로 결과 받아오는거
+                            Log.d("XYdata", "startX: " + startX + "startY: " + startY + "endX" + endX + "endY" + endY);
+                            intent.putExtra("isSearched", "true");
+                            intent.putExtra("sRouteList", searchedRouteArrayList);
+                        }
+                        startActivity(intent);
+
+                    }
+                }
             // 출발/도착지 주소명 검색 버튼 클릭 시
             else {
                String location = null;
