@@ -24,8 +24,8 @@
         android:background="@android:color/holo_blue_light"
         android:text="선택할 수 있는 하나의 경로"/>
 
-    <ListView
-        android:layout_width="wrap_content"
+    <ExpandableListView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/srouteList"></ListView>
+        android:id="@+id/srouteList"></ExpandableListView>
 </LinearLayout>

@@ -2,9 +2,10 @@ package b1g4.com.yourseat;
 
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-
-public class SearchedRoute {
+@SuppressWarnings("serial")
+public class SearchedRoute implements Serializable {
 
     /*
     private ArrayList<ArrayList<String>> apiRouteLists = new ArrayList<ArrayList<String>>();
@@ -20,6 +21,14 @@ public class SearchedRoute {
     ArrayList<String> transferStationList = new ArrayList<>();
     ArrayList<String> transferRouteList = new ArrayList<>();
     String time;
+
+    /*
+    //heesu: expandedlistView에 사용할 childStations 배열.
+    ArrayList<String> childStations;
+
+    SearchedRoute(){
+        childStations = new ArrayList<String>();
+    }*/
 
     public int getTransferNum() {
         return transferNum;

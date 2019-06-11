@@ -59,7 +59,8 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
     private NotificationManager notificationManager;
     private Notification.Builder builder;
 
-    private ArrayList<ArrayList<String>> searchedRouteArrayList;
+    //private ArrayList<ArrayList<String>> searchedRouteArrayList;
+    private ArrayList<sRouteGroup> sRouteGroupArrayList;
 
     private MapView mapView;
     private CurrentLocationXY currentLocationXY = CurrentLocationXY.getInstance();
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         //버전 확인
         if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) return;
 
-        //권한 확인 Context.checkSelfPermission
+        //권한 확인 Con  text.checkSelfPermission
         if(m_checkSelfPermission(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         startEditText = findViewById(R.id.startLocation);
         endEditText = findViewById(R.id.endLocation);
 
-        searchedRouteArrayList = new ArrayList<ArrayList<String>>();
+        //searchedRouteArrayList = new ArrayList<ArrayList<String>>();
 
         /*ArrayList<ArrayList<String>> apiRouteLists = null;
         for(int i=0; i< apiRouteLists.size(); i++) {
@@ -114,20 +115,27 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
             searchedRouteArrayList.add(tmp);
         }*/
 
-        //테스트용 인풋 생성
-        final ArrayList<String> sample = new ArrayList<>();
-        sample.add("100000384");
-        sample.add("중앙대정문");
-        sample.add("동작01");
-        sample.add("100000165");
-        sample.add("달마사");
-        sample.add("111111111");
-        sample.add("달마사");
-        sample.add("동작21");
-        sample.add("100000165");
-        sample.add("중앙대중문");
-        sample.add("23");
-        searchedRouteArrayList.add(sample);
+        //heesu: expandable listview에 맞는 테스트 인풋 생성
+        sRouteGroup temp = new sRouteGroup();
+        temp.searchedRouteList.add("100000384");
+        temp.searchedRouteList.add("100000384");
+        temp.searchedRouteList.add("중앙대정문");
+        temp.searchedRouteList.add("동작01");
+        temp.searchedRouteList.add("100000165");
+        temp.searchedRouteList.add("달마사");
+        temp.searchedRouteList.add("111111111");
+        temp.searchedRouteList.add("달마사");
+        temp.searchedRouteList.add("동작21");
+        temp.searchedRouteList.add("100000165");
+        temp.searchedRouteList.add("중앙대중문");
+        temp.searchedRouteList.add("23");
+
+        temp.child.add("정류장1");
+        temp.child.add("정류장2");
+        temp.child.add("정류장3");
+
+        sRouteGroupArrayList = new ArrayList<>();
+        sRouteGroupArrayList.add(temp);
 
         // 버튼 설정
         BtnOnClickListener onClickListener = new BtnOnClickListener() ;
@@ -197,16 +205,19 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                         if(startAddress.equals(startAddresses.documents.get(i).address_name)) {
                             startX = startAddresses.documents.get(i).x;
                             startY = startAddresses.documents.get(i).y;
+                            Log.d("TAG", "onClick: GET START ADDRESS");
                         }
                     }
                     for(int i=0; i<endAddresses.documents.size(); i++) {
                         if(endAddress.equals(endAddresses.documents.get(i).address_name)){
                             endX = endAddresses.documents.get(i).x;
                             endY = endAddresses.documents.get(i).y;
+                            Log.d("TAG", "onClick: GET END ADDRESS");
                         }
                     }
 
                     Intent intent;
+                    //heesu: 길찾기 눌렀을 때 GetSearchedRouteActivity.class를 띄운다.
                     intent = new Intent(getApplicationContext(), GetSearchedRouteActivity.class);
                     intent.putExtra("startAddress", startAddress);
                     intent.putExtra("endAddress", endAddress);
@@ -218,12 +229,19 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                         // 경로 탐색 파트로 출발/도착지 x,y 좌표 넘겨주기 -> 결과리스트 searchedRouteArrayList에 받도록.
                         Log.d("XYdata", "startX: " + startX + "startY: " + startY + "endX" + endX + "endY" + endY);
                         intent.putExtra("isSearched", "true");
-                        intent.putExtra("sRouteList", searchedRouteArrayList);
+
+                        //heesu: sRouteGroupArrayList를 보낸다.
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("sRouteList",sRouteGroupArrayList);
+                        intent.putExtras(bundle);
+
+                        //intent.putExtra("sRouteList", sRouteGroupArrayList);
                     }
                     startActivity(intent);
 
                 }
             }
+
             // 출발/도착지 주소명 검색 버튼 클릭 시
             else {
                String location = null;

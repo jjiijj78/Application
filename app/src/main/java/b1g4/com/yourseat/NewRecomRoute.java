@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class NewRecomRoute extends Fragment {
+public class  NewRecomRoute extends Fragment {
 
     //TextView textView;
     private ListView listView;
