@@ -67,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
     public final int MY_PERMISSIONS=4;
     Set<String> setPermissions=new ConcurrentSkipListSet<>();
 
+    // 검색기록 저장을 위한 ArrayList
+    private ArrayList<String> savedAddressList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //버전 확인
@@ -107,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         endEditText = findViewById(R.id.endLocation);
 
         searchedRouteArrayList = new ArrayList<ArrayList<String>>();
+
+        savedAddressList = new ArrayList<String>();
 
         /*ArrayList<ArrayList<String>> apiRouteLists = null;
         for(int i=0; i< apiRouteLists.size(); i++) {
@@ -177,6 +182,13 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
 //        }
     }
 
+    class ETOnClickListener implements EditText.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+        }
+    }
+
 
     // 주소를 입력하고 검색 버튼을 눌렀을 때 실행되는 파트
     class BtnOnClickListener implements Button.OnClickListener {
@@ -231,6 +243,10 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                 switch(v.getId()) {
                     case R.id.startSearchBtn:
                         location = startEditText.getText().toString();
+                        if (location.equals("")) {      // 검색어 없을 경우의 예외처리
+                            Toast.makeText(getBaseContext(), "출발지를 입력하세요.", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
                         startAddresses = getAddrData(location);
                         Intent intentS = new Intent(getApplicationContext(), AddrSelectActivity.class);
                         intentS.putExtra("addrList", startAddresses);
@@ -239,6 +255,10 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                         break;
                     case R.id.endSearchBtn:
                         location = endEditText.getText().toString();
+                        if (location.equals("")) {      // 검색어 없을 경우의 예외처리
+                            Toast.makeText(getBaseContext(), "도착지를 입력하세요.", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
                         endAddresses = getAddrData(location);
                         Intent intentE = new Intent(getApplicationContext(), AddrSelectActivity.class);
                         intentE.putExtra("addrList", endAddresses);
@@ -264,6 +284,19 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
             } else if(requestCode == Code.requestCodeEnd) { // 도착지 주소명 검색으로부터 넘어간 액티비티였을 경우 반환값으로 도착지 EditText 값 설정
                 endAddress = selectedResult;
                 endEditText.setText(selectedResult);
+            }
+
+            // 검색 기록 저장
+            Log.d("SavedSharedPreference", selectedResult);
+            Log.d("SavedSharedPreference", savedAddressList.toString());
+            if (!savedAddressList.contains(selectedResult)) {
+                savedAddressList.add(0, selectedResult);
+
+                // 최근 7개까지만 저장
+                if (savedAddressList.size() > 7) {
+                    savedAddressList.subList(7,savedAddressList.size()).clear();
+                }
+                SavedSharedPreference.setAddressList(getBaseContext(), savedAddressList);
             }
         }
     }
