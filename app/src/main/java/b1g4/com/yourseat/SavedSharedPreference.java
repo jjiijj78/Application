@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.google.gson.JsonArray;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -23,17 +21,17 @@ public class SavedSharedPreference {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public static void setAddressList(Context context, ArrayList<String> startList) {
+    public static void setAddressList(Context context, ArrayList<String> addressList) {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
 
         editor.remove(PREF_ADDRESS_LIST);
         editor.apply();
 
         JSONArray jsonArray =  new JSONArray();
-        for (int i = 0; i < startList.size(); i++)
-            jsonArray.put(startList.get(i));
+        for (int i = 0; i < addressList.size(); i++)
+            jsonArray.put(addressList.get(i));
 
-        if (!startList.isEmpty())
+        if (!addressList.isEmpty())
             editor.putString(PREF_ADDRESS_LIST, jsonArray.toString());
         else
             editor.putString(PREF_ADDRESS_LIST, null);
@@ -47,19 +45,26 @@ public class SavedSharedPreference {
         SharedPreferences sharedPreferences = getSharedPreferences(context);
         String json = sharedPreferences.getString(PREF_ADDRESS_LIST, null);
 
-        ArrayList<String> startAddressList = new ArrayList<String>();
+        ArrayList<String> addressList = new ArrayList<String>();
         if (json != null) {
             try {
                 JSONArray jsonArray = new JSONArray(json);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     String address = jsonArray.optString(i);
-                    startAddressList.add(address);
+                    addressList.add(address);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        Log.d(TAG, startAddressList.toString());
-        return startAddressList;
+        Log.d(TAG, "Route : " + addressList.toString());
+        return addressList;
+    }
+
+    public static void deleteAll(Context context) {
+        Log.i(TAG, "Delete All");
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.clear();
+        editor.commit();
     }
 }
