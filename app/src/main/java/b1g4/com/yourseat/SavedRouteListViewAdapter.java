@@ -9,10 +9,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class RecordAddressListViewAdapter extends BaseAdapter {
+public class SavedRouteListViewAdapter extends BaseAdapter {
     private ArrayList<String> routeList;
 
-    public RecordAddressListViewAdapter(ArrayList<String> routeList) {
+    public SavedRouteListViewAdapter(ArrayList<String> routeList) {
         this.routeList = routeList;
     }
 

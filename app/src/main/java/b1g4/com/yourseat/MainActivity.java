@@ -1,23 +1,13 @@
 package b1g4.com.yourseat;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +22,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 import com.google.gson.Gson;
 
-import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -70,12 +59,9 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
     Set<String> setPermissions=new ConcurrentSkipListSet<>();
 
     // 검색기록 저장을 위해 추가한 것들
-    private ArrayList<String> startAddressList;
-    private ArrayList<String> endAddressList;
     private ArrayList<String> searchedRouteList;
-
-    private ListView searchRecordListView;
-    private RecordAddressListViewAdapter searchRecordLVAdapter;
+    private ListView searchedRouteListView;
+    private SavedRouteListViewAdapter searchedRouteLVAdapter;
 
 
     @Override
@@ -149,8 +135,8 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         endSearchBtn.setOnClickListener(onClickListener);
         searchPathBtn.setOnClickListener(onClickListener);
 
-        SavedSharedPreference.deleteAll(getBaseContext());
-        searchRecordListView = findViewById(R.id.searchRecordLV);
+//        SavedSharedPreference.deleteAll(getBaseContext());
+        searchedRouteListView = findViewById(R.id.searchRecordLV);
 
 
 //        //busInfo에 파일들을 읽어서 정보를 저장하는 코드를 실행해야 함
@@ -210,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                     Log.d("SavedSharedPreference", searchedRouteList.toString());
                     if (!searchedRouteList.contains(route)) {
                         searchedRouteList.add(0, route);
-                        // 최근 7개까지만 저장
+                        // 최근 10개까지만 저장
                         if (searchedRouteList.size() > 10) {
                             searchedRouteList.subList(10,searchedRouteList.size()).clear();
                         }
@@ -261,10 +247,6 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                 switch(v.getId()) {
                     case R.id.startSearchBtn:
                         location = startEditText.getText().toString();
-                        if (location.equals("")) {      // 검색어 없을 경우의 예외처리
-                            Toast.makeText(getBaseContext(), "출발지를 입력하세요.", Toast.LENGTH_SHORT).show();
-                            break;
-                        }
                         startAddresses = getAddrData(location);
                         Intent intentS = new Intent(getApplicationContext(), AddrSelectActivity.class);
                         intentS.putExtra("addrList", startAddresses);
@@ -273,10 +255,6 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                         break;
                     case R.id.endSearchBtn:
                         location = endEditText.getText().toString();
-                        if (location.equals("")) {      // 검색어 없을 경우의 예외처리
-                            Toast.makeText(getBaseContext(), "도착지를 입력하세요.", Toast.LENGTH_SHORT).show();
-                            break;
-                        }
                         endAddresses = getAddrData(location);
                         Intent intentE = new Intent(getApplicationContext(), AddrSelectActivity.class);
                         intentE.putExtra("addrList", endAddresses);
@@ -375,10 +353,10 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         searchedRouteList = new ArrayList<String>();
         searchedRouteList = SavedSharedPreference.getAddressList(getBaseContext());
 
-        searchRecordLVAdapter = new RecordAddressListViewAdapter(searchedRouteList);
-        searchRecordListView.setAdapter(searchRecordLVAdapter);
+        searchedRouteLVAdapter = new SavedRouteListViewAdapter(searchedRouteList);
+        searchedRouteListView.setAdapter(searchedRouteLVAdapter);
 
-        searchRecordListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        searchedRouteListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String route = searchedRouteList.get(position);
