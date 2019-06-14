@@ -235,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                         }
                         intent.putExtra("isSearched", "true");
                         intent.putExtra("sRouteList", searchedRouteArrayList);
+                        intent.putExtra("sRouteStationList",searchedRouteArrayListByStop);      //heesu
                     }
                     startActivity(intent);
                 }
