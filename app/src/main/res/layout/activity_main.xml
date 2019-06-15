@@ -34,6 +34,28 @@
             android:id="@+id/endSearchBtn"
             android:text="검색"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginVertical="17dp"
+            android:layout_marginHorizontal="7dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="최근 검색 기록"/>
+
+            <ListView
+                android:id="@+id/searchRecordLV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="7dp">
+
+            </ListView>
+
+        </LinearLayout>
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

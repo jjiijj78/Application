@@ -1,22 +1,13 @@
 package b1g4.com.yourseat;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,13 +15,13 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.google.gson.Gson;
 
-import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -66,6 +57,12 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
 
     public final int MY_PERMISSIONS=4;
     Set<String> setPermissions=new ConcurrentSkipListSet<>();
+
+    // 검색기록 저장을 위해 추가한 것들
+    private ArrayList<String> searchedRouteList;
+    private ListView searchedRouteListView;
+    private SavedRouteListViewAdapter searchedRouteLVAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +135,8 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         endSearchBtn.setOnClickListener(onClickListener);
         searchPathBtn.setOnClickListener(onClickListener);
 
-
+//        SavedSharedPreference.deleteAll(getBaseContext());
+        searchedRouteListView = findViewById(R.id.searchRecordLV);
 
 
 //        //busInfo에 파일들을 읽어서 정보를 저장하는 코드를 실행해야 함
@@ -188,6 +186,24 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                 if(startAddress == null || endAddress == null) {
                     Toast.makeText(getApplicationContext(), "출발지와 도착지 입력을 완료해주세요.", Toast.LENGTH_SHORT);
                 } else {
+
+                    // 검색 기록 저장
+                    String start = startEditText.getText().toString();
+                    String end = endEditText.getText().toString();
+                    String route = start + " → " + end;
+
+                    Log.d("SavedSharedPreference", route);
+                    Log.d("SavedSharedPreference", searchedRouteList.toString());
+                    if (!searchedRouteList.contains(route)) {
+                        searchedRouteList.add(0, route);
+                        // 최근 10개까지만 저장
+                        if (searchedRouteList.size() > 10) {
+                            searchedRouteList.subList(10,searchedRouteList.size()).clear();
+                        }
+                        SavedSharedPreference.setAddressList(getBaseContext(), searchedRouteList);
+                    }
+
+
                     // 출발/도착지의 x,y 좌표 받아오기
                     String startX = null;
                     String startY = null;
@@ -333,6 +349,30 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
     @Override
     protected void onResume() {
         super.onResume();
+
+        searchedRouteList = new ArrayList<String>();
+        searchedRouteList = SavedSharedPreference.getAddressList(getBaseContext());
+
+        searchedRouteLVAdapter = new SavedRouteListViewAdapter(searchedRouteList);
+        searchedRouteListView.setAdapter(searchedRouteLVAdapter);
+
+        searchedRouteListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String route = searchedRouteList.get(position);
+                String[] points = route.split(" → ");
+                Log.d("SavedSharedPreference", points.toString());
+
+                startAddress = points[0];
+                endAddress = points[1];
+
+                startEditText.setText(startAddress);
+                endEditText.setText(endAddress);
+
+                startAddresses = getAddrData(startAddress);
+                endAddresses = getAddrData(endAddress);
+            }
+        });
     }
 
     @Override
